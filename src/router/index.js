@@ -4,6 +4,7 @@ import Login from '@/views/login/Login'
 import layout from '../views/layout/Layout'
 import Register from '@/views/directory/register/Register'
 import ArrangeIndex from '@/views/directory/arrangement/index'
+import DirDetail from '@/views/directory/arrangement/dirDetail'
 
 Vue.use(Router)
 
@@ -42,7 +43,14 @@ export default new Router({
           path: 'arrange',
           name: 'arrange',
           component: ArrangeIndex,
-          meta: {title: '目录信息', icon: 'IoT_arrangement'}
+          meta: {title: '平台信息', icon: 'IoT_arrangement'}
+        },
+        {
+          path: 'dirDetail',
+          name: 'dirDetail',
+          component: DirDetail,
+          meta: {title: '平台目录详情'},
+          hidden:true
         }
       ]
     },

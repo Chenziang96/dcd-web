@@ -88,8 +88,13 @@
                 }
                 const str = window.JSON.stringify(this.directory);     //把需要存储的对象IoT数据变成字符串（因为localstorage只能存储字符串数据）
                 localStorage.setItem('IoTInfo', str);            //把数据存入localstorage中，名字为IoTInfo
+                this.$message({
+                  message: '添加成功',
+                  type: 'success'
+                })
               } else {
                 console.log('error submit!!');
+                this.$message.error('上传失败，请检查输入');
                 return false;
               }
             });
@@ -97,7 +102,11 @@
           removeDomain(item) {
             const index = this.IoT.dir.indexOf(item);
             if (index !== -1) {
-              this.IoT.dir.splice(index, 1)
+              this.IoT.dir.splice(index, 1);
+              this.$message({
+                message: '删除成功',
+                type: 'success'
+              })
             }
           },
           addDomain(formName) {
@@ -109,9 +118,14 @@
                 this.dir.dir_0 = '';
                 this.index = this.index + 1;
                 console.log('submit!!');
+                this.$message({
+                  message: '添加成功',
+                  type: 'success'
+                })
               } else
               {
                 console.log('error submit!!');
+                this.$message.error('添加失败，请检查输入');
                 return false;
               }
             });
