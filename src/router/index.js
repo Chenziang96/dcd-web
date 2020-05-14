@@ -5,6 +5,7 @@ import layout from '../views/layout/Layout'
 import Register from '@/views/directory/register/Register'
 import ArrangeIndex from '@/views/directory/arrangement/index'
 import DirDetail from '@/views/directory/arrangement/dirDetail'
+import Authority from '@/views/authority/user/index'
 
 Vue.use(Router)
 
@@ -30,7 +31,7 @@ export default new Router({
       path: '/directory',
       component: layout,
       redirect: '/directory/register',
-      name: 'index',
+      name: 'directory',
       meta: {title: '目录管理', icon: 'register'},
       children: [
         {
@@ -52,6 +53,27 @@ export default new Router({
           meta: {title: '平台目录详情'},
           hidden:true
         }
+      ]
+    },
+    {
+      path: '/authority',
+      component: layout,
+        redirect: '/authority/user',
+      name: 'authority',
+      meta: {title: '权限管理', icon: 'authority'},
+      children: [
+        {
+          path: 'user',
+          name: 'user',
+          component: Authority,
+          meta: {title: '用户列表', icon: 'IoT_register'}
+        },
+        {
+          path: 'role',
+          name: 'role',
+          component: ()=> import('@/views/authority/role/index'),
+          meta: {title: '权限列表', icon: 'IoT_register'}
+        },
       ]
     },
   ]

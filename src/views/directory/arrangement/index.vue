@@ -50,9 +50,9 @@
         </el-table-column>
       </el-table>
       <el-dialog :title="'目录编号' + changeData.id" :visible.sync="dialogFormVisible" class="dialog-title">
-        <el-form :model="changeData" label-width="80px">
+        <el-form  :model="changeData" label-width="80px">
           <el-form-item label="平台名称">
-            <el-input v-model="changeData.name"></el-input>
+            <el-input  v-model="changeData.name"></el-input>
           </el-form-item>
           <el-form-item label="平台ip">
             <el-input v-model="changeData.ip"></el-input>
@@ -60,7 +60,7 @@
         </el-form>
         <div slot="footer" class="dialog-footer">
           <el-button @click="deleteModify">取 消</el-button>
-          <el-button type="primary" @click="dialogFormVisible = false">确 定</el-button>
+          <el-button type="primary" @click="handleOk">确 定</el-button>
         </div>
       </el-dialog>
     </div>
@@ -191,7 +191,11 @@
           }
         ],          //截取的当前要展示的目录信息数组
         list: [],
-        changeData: {},
+        changeData: {
+          name:'',
+          ip:'',
+          id:''
+        },
         initialData: {},
         operateType: null,
         multipleSelection: [],
@@ -266,10 +270,15 @@
           });
         })
       },
+      handleOk(){
+        this.dialogFormVisible = false;
+      },
       handleChange(index, row){
         this.dialogFormVisible = true;
-        this.changeData = row;
-        this.initialData = this.changeData;
+        this.changeData.name = row.name;
+        this.changeData.ip = row.ip;
+        this.changeData.id = row.id;
+        console.log('changeData',this.changeData);
       },
       deleteModify() {
         this.dialogFormVisible = false;
