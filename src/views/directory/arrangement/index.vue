@@ -44,15 +44,15 @@
         <el-table-column label="操作" width="200" align="center">
           <template slot-scope="scope">
             <el-button size="mini" @click="handleDetail(scope.$index, scope.row)" type="primary">查看详情</el-button>
-            <el-button size="mini" @click="handleDelete(scope.$index, scope.row)" v-show="scope.row.status===0" type="danger">删除平台</el-button>
-            <el-button size="mini" @click="handleChange(scope.$index, scope.row)" v-show="scope.row.status===1" type="primary">编辑平台</el-button>
+            <el-button size="mini" @click="handleDelete(scope.$index, scope.row)" v-show="scope.row.status==='0'" type="danger">删除平台</el-button>
+            <el-button size="mini" @click="handleChange(scope.$index, scope.row)" v-show="scope.row.status==='1'" type="primary">编辑平台</el-button>
           </template>
         </el-table-column>
       </el-table>
-      <el-dialog :title="'目录编号' + changeData.id" :visible.sync="dialogFormVisible" class="dialog-title">
-        <el-form  :model="changeData" label-width="80px">
+      <el-dialog :title="'目录编号' + changeData.id" :visible.sync="dialogFormVisible" class="dialog-title" width="600px">
+        <el-form :model="changeData" label-width="80px">
           <el-form-item label="平台名称">
-            <el-input  v-model="changeData.name"></el-input>
+            <el-input v-model="changeData.name"></el-input>
           </el-form-item>
           <el-form-item label="平台ip">
             <el-input v-model="changeData.ip"></el-input>
@@ -60,7 +60,7 @@
         </el-form>
         <div slot="footer" class="dialog-footer">
           <el-button @click="deleteModify">取 消</el-button>
-          <el-button type="primary" @click="handleOk">确 定</el-button>
+          <el-button type="danger" @click="confirmModify">确 定</el-button>
         </div>
       </el-dialog>
     </div>
@@ -106,21 +106,21 @@
           ip:'192.168.1.1',
           time:'2019-11-12',
           dir: [
-            { id: '1', resourceType: '视频', dirName: '蜘蛛侠1.mp4', status:0 },
-            { id: '2', resourceType: '视频', dirName: '蜘蛛侠2.mp4', status:0 },
-            { id: '3', resourceType: '视频', dirName: '蜘蛛侠3.mp4', status:1 },
-            { id: '4', resourceType: '音频', dirName: '稻香.mp3', status:1 },
-            { id: '5', resourceType: '音频', dirName: '告白气球.mp3', status:1 },
-            { id: '6', resourceType: '音频', dirName: '晴天.mp3', status:0 },
-            { id: '7', resourceType: '音频', dirName: '一路向北.mp3', status:0 },
-            { id: '8', resourceType: '文档', dirName: '作业.txt', status:0 },
-            { id: '9', resourceType: '文档', dirName: '书籍.txt', status:0 },
-            { id: '10', resourceType: '文档', dirName: '说明书.txt', status:0 },
-            { id: '11', resourceType: '图片', dirName: '图片1.jpg', status:0 },
-            { id: '12', resourceType: '图片', dirName: '图片2.jpg', status:0 },
-            { id: '13', resourceType: '图片', dirName: '图片3.jpg', status:0 },
+            { id: '1', resourceType: '视频', dirName: '蜘蛛侠1.mp4', status: '0' },
+            { id: '2', resourceType: '视频', dirName: '蜘蛛侠2.mp4', status: '0' },
+            { id: '3', resourceType: '视频', dirName: '蜘蛛侠3.mp4', status: '1' },
+            { id: '4', resourceType: '音频', dirName: '稻香.mp3', status: '1' },
+            { id: '5', resourceType: '音频', dirName: '告白气球.mp3', status: '1' },
+            { id: '6', resourceType: '音频', dirName: '晴天.mp3', status: '0' },
+            { id: '7', resourceType: '音频', dirName: '一路向北.mp3', status: '0' },
+            { id: '8', resourceType: '文档', dirName: '作业.txt', status: '0' },
+            { id: '9', resourceType: '文档', dirName: '书籍.txt', status: '0'},
+            { id: '10', resourceType: '文档', dirName: '说明书.txt', status: '0' },
+            { id: '11', resourceType: '图片', dirName: '图片1.jpg', status: '0' },
+            { id: '12', resourceType: '图片', dirName: '图片2.jpg', status: '0' },
+            { id: '13', resourceType: '图片', dirName: '图片3.jpg', status: '0' },
           ],
-          status:1
+          status: '1'
           },
           {
             id:'2',
@@ -128,21 +128,21 @@
             ip:'192.168.1.2',
             time:'2019-11-12',
             dir: [
-              { id: '1', resourceType: '视频', dirName: '美国队长1.mp4', status:0 },
-              { id: '2', resourceType: '视频', dirName: '美国队长2.mp4', status:0 },
-              { id: '3', resourceType: '视频', dirName: '美国队长3.mp4', status:1 },
-              { id: '4', resourceType: '音频', dirName: '稻香.mp3', status:1 },
-              { id: '5', resourceType: '音频', dirName: '告白气球.mp3', status:0 },
-              { id: '6', resourceType: '音频', dirName: '晴天.mp3', status:0 },
-              { id: '7', resourceType: '音频', dirName: '一路向北.mp3', status:0 },
-              { id: '8', resourceType: '文档', dirName: '作业.txt', status:0 },
-              { id: '9', resourceType: '文档', dirName: '书籍.txt', status:0 },
-              { id: '10', resourceType: '文档', dirName: '说明书.txt', status:1 },
-              { id: '11', resourceType: '图片', dirName: '图片1.jpg', status:1 },
-              { id: '12', resourceType: '图片', dirName: '图片2.jpg', status:0 },
-              { id: '13', resourceType: '图片', dirName: '图片3.jpg', status:0 },
+              { id: '1', resourceType: '视频', dirName: '美国队长1.mp4', status: '0' },
+              { id: '2', resourceType: '视频', dirName: '美国队长2.mp4', status: '0' },
+              { id: '3', resourceType: '视频', dirName: '美国队长3.mp4', status: '1' },
+              { id: '4', resourceType: '音频', dirName: '稻香.mp3', status: '0' },
+              { id: '5', resourceType: '音频', dirName: '告白气球.mp3', status: '0' },
+              { id: '6', resourceType: '音频', dirName: '晴天.mp3', status: '0' },
+              { id: '7', resourceType: '音频', dirName: '一路向北.mp3', status: '0' },
+              { id: '8', resourceType: '文档', dirName: '作业.txt', status: '0' },
+              { id: '9', resourceType: '文档', dirName: '书籍.txt', status: '0' },
+              { id: '10', resourceType: '文档', dirName: '说明书.txt', status: '1' },
+              { id: '11', resourceType: '图片', dirName: '图片1.jpg', status: '1' },
+              { id: '12', resourceType: '图片', dirName: '图片2.jpg', status: '0' },
+              { id: '13', resourceType: '图片', dirName: '图片3.jpg', status: '0' },
             ],
-            status:0
+            status: '0'
           },
           {
             id:'3',
@@ -150,21 +150,21 @@
             ip:'192.168.1.3',
             time:'2019-11-13',
             dir: [
-              { id: '1', resourceType: '视频', dirName: '雷神1.mp4', status:0 },
-              { id: '2', resourceType: '视频', dirName: '雷神2.mp4', status:0 },
-              { id: '3', resourceType: '视频', dirName: '雷神3.mp4', status:0 },
-              { id: '4', resourceType: '音频', dirName: '稻香.mp3', status:1 },
-              { id: '5', resourceType: '音频', dirName: '告白气球.mp3', status:0 },
-              { id: '6', resourceType: '音频', dirName: '晴天.mp3', status:0 },
-              { id: '7', resourceType: '音频', dirName: '一路向北.mp3', status:0 },
-              { id: '8', resourceType: '文档', dirName: '作业.txt', status:1 },
-              { id: '9', resourceType: '文档', dirName: '书籍.txt', status:0 },
-              { id: '10', resourceType: '文档', dirName: '说明书.txt', status:1 },
-              { id: '11', resourceType: '图片', dirName: '图片1.jpg', status:0 },
-              { id: '12', resourceType: '图片', dirName: '图片2.jpg', status:0 },
-              { id: '13', resourceType: '图片', dirName: '图片3.jpg', status:1 },
+              { id: '1', resourceType: '视频', dirName: '雷神1.mp4', status: '0' },
+              { id: '2', resourceType: '视频', dirName: '雷神2.mp4', status: '0' },
+              { id: '3', resourceType: '视频', dirName: '雷神3.mp4', status: '0' },
+              { id: '4', resourceType: '音频', dirName: '稻香.mp3', status: '1' },
+              { id: '5', resourceType: '音频', dirName: '告白气球.mp3', status: '0' },
+              { id: '6', resourceType: '音频', dirName: '晴天.mp3', status: '0' },
+              { id: '7', resourceType: '音频', dirName: '一路向北.mp3', status: '0' },
+              { id: '8', resourceType: '文档', dirName: '作业.txt', status: '1' },
+              { id: '9', resourceType: '文档', dirName: '书籍.txt', status: '0' },
+              { id: '10', resourceType: '文档', dirName: '说明书.txt', status: '1' },
+              { id: '11', resourceType: '图片', dirName: '图片1.jpg', status: '0' },
+              { id: '12', resourceType: '图片', dirName: '图片2.jpg', status: '0' },
+              { id: '13', resourceType: '图片', dirName: '图片3.jpg', status: '1' },
             ],
-            status:0
+            status: '0'
           },
           {
             id:'4',
@@ -172,31 +172,30 @@
             ip:'192.168.1.4',
             time:'2019-11-13',
             dir: [
-              { id: '1', resourceType: '视频', dirName: '复仇者联盟1.mp4', status:0 },
-              { id: '2', resourceType: '视频', dirName: '复仇者联盟2.mp4', status:1 },
-              { id: '3', resourceType: '视频', dirName: '复仇者联盟3.mp4', status:1 },
-              { id: '4', resourceType: '音频', dirName: '稻香.mp3', status:0 },
-              { id: '5', resourceType: '音频', dirName: '告白气球.mp3', status:0 },
-              { id: '6', resourceType: '音频', dirName: '晴天.mp3', status:0 },
-              { id: '7', resourceType: '音频', dirName: '一路向北.mp3', status:0 },
-              { id: '8', resourceType: '文档', dirName: '作业.txt', status:0 },
-              { id: '9', resourceType: '文档', dirName: '书籍.txt', status:1 },
-              { id: '10', resourceType: '文档', dirName: '说明书.txt', status:0 },
-              { id: '11', resourceType: '图片', dirName: '图片1.jpg', status:0 },
-              { id: '12', resourceType: '图片', dirName: '图片2.jpg', status:0 },
-              { id: '13', resourceType: '图片', dirName: '图片3.jpg' ,status:0 },
-              { id: '14', resourceType: '视频', dirName: '复仇者联盟4.mp4', status:0 },
+              { id: '1', resourceType: '视频', dirName: '复仇者联盟1.mp4', status: '0' },
+              { id: '2', resourceType: '视频', dirName: '复仇者联盟2.mp4', status: '1' },
+              { id: '3', resourceType: '视频', dirName: '复仇者联盟3.mp4', status: '1' },
+              { id: '4', resourceType: '音频', dirName: '稻香.mp3', status: '0' },
+              { id: '5', resourceType: '音频', dirName: '告白气球.mp3', status: '0' },
+              { id: '6', resourceType: '音频', dirName: '晴天.mp3', status: '0' },
+              { id: '7', resourceType: '音频', dirName: '一路向北.mp3', status: '0' },
+              { id: '8', resourceType: '文档', dirName: '作业.txt', status: '0' },
+              { id: '9', resourceType: '文档', dirName: '书籍.txt', status: '1' },
+              { id: '10', resourceType: '文档', dirName: '说明书.txt', status: '0' },
+              { id: '11', resourceType: '图片', dirName: '图片1.jpg', status: '0' },
+              { id: '12', resourceType: '图片', dirName: '图片2.jpg', status: '0' },
+              { id: '13', resourceType: '图片', dirName: '图片3.jpg' ,status: '0' },
+              { id: '14', resourceType: '视频', dirName: '复仇者联盟4.mp4', status: '0' },
             ],
-            status:1
+            status: '1'
           }
         ],          //截取的当前要展示的目录信息数组
         list: [],
         changeData: {
-          name:'',
-          ip:'',
-          id:''
+          id: '',
+          ip: '',
+          name: ''
         },
-        initialData: {},
         operateType: null,
         multipleSelection: [],
         closeOrder:{
@@ -270,19 +269,38 @@
           });
         })
       },
-      handleOk(){
-        this.dialogFormVisible = false;
-      },
       handleChange(index, row){
         this.dialogFormVisible = true;
-        this.changeData.name = row.name;
-        this.changeData.ip = row.ip;
         this.changeData.id = row.id;
-        console.log('changeData',this.changeData);
+        this.changeData.ip = row.ip;
+        this.changeData.name = row.name;
       },
       deleteModify() {
         this.dialogFormVisible = false;
-        this.changeData = this.initialData;
+        this.changeData.id = '';
+        this.changeData.name = '';
+        this.changeData.ip = '';
+      },
+      confirmModify() {
+        this.$confirm('是否要进行该编辑操作?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          this.dialogFormVisible = false;
+          let i = 0;
+          for(i=0;i<this.allList.length;i++)
+          {
+            if(this.allList[i].id === this.changeData.id)
+            {
+              this.allList[i].name = this.changeData.name;
+              this.allList[i].ip = this.changeData.ip;
+            }
+          }
+          this.changeData.id = '';
+          this.changeData.name = '';
+          this.changeData.ip = '';
+        })
       },
       reForm(){
         this.listQuery.createTime='';
@@ -296,4 +314,6 @@
   .dialog-title {
     text-align: center;
   }
+
+
 </style>
