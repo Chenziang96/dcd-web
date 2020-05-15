@@ -259,8 +259,9 @@
             this.dirDetailData.status = row.status;
           },
           handleDelete(index,row) {
-            if (index !== -1) {
-              this.dirList.splice(index, 1);
+            const index1 = index+this.listQuery.pageSize*(this.listQuery.pageNum-1);
+            if (index1 !== -1) {
+              this.dirList.splice(index1, 1);
               this.$message({
                 message: '删除成功',
                 type: 'success'
@@ -268,7 +269,7 @@
               let i = 0;
               for(i=0;i<this.dirList.length;i++)
               {
-                if(this.dirList[i].id>index+1)
+                if(this.dirList[i].id>index1+1)
                 {
                   this.dirList[i].id=this.dirList[i].id-1;
                 }
