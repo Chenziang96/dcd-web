@@ -6,8 +6,12 @@ import Register from '@/views/directory/register/Register'
 import ArrangeIndex from '@/views/directory/arrangement/index'
 import DirDetail from '@/views/directory/arrangement/dirDetail'
 import Authority from '@/views/authority/user/index'
+import Send from '@/views/transmit/send/index'
+import DataSend from '@/views/transmit/send/dataSend'
+import Request from '@/views/transmit/receive/index'
 
-Vue.use(Router)
+
+Vue.use(Router);
 
 export default new Router({
   routes: [
@@ -53,6 +57,35 @@ export default new Router({
           meta: {title: '平台目录详情'},
           hidden:true
         }
+      ]
+    },
+    {
+      path: '/transmit',
+      component: layout,
+      redirect: '/transmit/send',
+      name: 'transmit',
+      meta: {title: '数据传输', icon: 'send'},
+      children: [
+        {
+          path: 'request',
+          name: 'request',
+          component: Request,
+          meta: {title: '请求发送', icon: 'request_send'}
+        },
+        {
+          path: 'send',
+          name: 'send',
+          component: Send,
+          meta: {title: '数据发送', icon: 'data_send'}
+        },
+        {
+          path: 'dataSend',
+          name: 'dataSend',
+          component: DataSend,
+          meta: {title: '目录数据发送'},
+          hidden:true
+        },
+
       ]
     },
     {
