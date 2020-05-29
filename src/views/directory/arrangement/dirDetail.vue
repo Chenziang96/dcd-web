@@ -130,14 +130,14 @@
 </template>
 
 <script>
-  const defaultListQuery = {
-    pageNum: 1,
-    pageSize: 10,
-    orderPerson: null,
-    orderIp: null,
-    orderDir: null,
-    createTime: null,
-  };
+    const defaultListQuery = {
+      pageNum: 1,
+      pageSize: 10,
+      orderPerson: null,
+      orderIp: null,
+      orderDir: null,
+      createTime: null,
+    };
     export default {
         name: "dirDetail",
         data() {
@@ -235,19 +235,25 @@
             this.dirAddData.status = '';
           },
           dirConfirmAdd() {
-            this.dialogFormVisible2 = false;
-            this.dirList.push({
-              id: this.dirAddData.id,
-              resourceType: this.dirAddData.resourceType,
-              dirName: this.dirAddData.dirName,
-              status: this.dirAddData.status
+            this.$confirm('是否要进行该编辑操作?', '提示', {
+              confirmButtonText: '确定',
+              cancelButtonText: '取消',
+              type: 'warning'
+            }).then(() => {
+              this.dialogFormVisible2 = false;
+              this.dirList.push({
+                id: this.dirAddData.id,
+                resourceType: this.dirAddData.resourceType,
+                dirName: this.dirAddData.dirName,
+                status: this.dirAddData.status
+              });
+              this.dirAddData.id = '';
+              this.dirAddData.resourceType = '';
+              this.dirAddData.dirName = '';
+              this.dirAddData.status = '';
+              this.selectChange();
+              this.getList();
             });
-            this.dirAddData.id = '';
-            this.dirAddData.resourceType = '';
-            this.dirAddData.dirName = '';
-            this.dirAddData.status = '';
-            this.selectChange();
-            this.getList();
           },
           handleDetail(index, row) {
             this.dialogTableVisible = true;
@@ -259,24 +265,31 @@
             this.dirDetailData.status = row.status;
           },
           handleDelete(index,row) {
-            const index1 = index+this.listQuery.pageSize*(this.listQuery.pageNum-1);
-            if (index1 !== -1) {
-              this.dirList.splice(index1, 1);
-              this.$message({
-                message: '删除成功',
-                type: 'success'
-              });
-              let i = 0;
-              for(i=0;i<this.dirList.length;i++)
+            this.$confirm('是否要进行该删除操作?', '提示', {
+              confirmButtonText: '确定',
+              cancelButtonText: '取消',
+              type: 'warning'
+            }).then(() => {
+              const index1 = index+this.listQuery.pageSize*(this.listQuery.pageNum-1);
+              if (index1 !== -1)
               {
-                if(this.dirList[i].id>index1+1)
+                this.dirList.splice(index1, 1);
+                this.$message({
+                  message: '删除成功',
+                  type: 'success'
+                });
+                let i = 0;
+                for(i=0;i<this.dirList.length;i++)
                 {
-                  this.dirList[i].id=this.dirList[i].id-1;
+                  if(this.dirList[i].id>index1+1)
+                  {
+                    this.dirList[i].id=this.dirList[i].id-1;
+                  }
                 }
+                this.selectChange();
+                this.getList();
               }
-              this.selectChange();
-              this.getList();
-            }
+            });
           },
           handleChange(index, row) {
             this.dialogFormVisible = true;
