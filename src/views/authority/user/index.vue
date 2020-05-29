@@ -10,28 +10,31 @@
           <template slot-scope="scope">{{scope.row.id}}</template>
         </el-table-column>
         <el-table-column label="账号名称" width="180" align="center">
-          <template slot-scope="scope">{{scope.row.countName}}</template>
+          <template slot-scope="scope">{{scope.row.userName}}</template>
         </el-table-column>
         <el-table-column label="平台名称" width="180" align="center">
-          <template slot-scope="scope">{{scope.row.name }}</template>
+          <template slot-scope="scope">{{scope.row.platformIp }}</template>
         </el-table-column>
         <el-table-column label="提交时间" align="center">
-          <template slot-scope="scope">{{scope.row.time}}</template>
+          <template slot-scope="scope">{{scope.row.registerTime}}</template>
         </el-table-column>
-        <el-table-column label="权限等级" align="center">
-          <template slot-scope="scope">{{scope.row.authorityLevel}}</template>
+        <el-table-column label="账户角色" align="center">
+          <template slot-scope="scope">{{scope.row.roleName}}</template>
+        </el-table-column>
+        <el-table-column label="是否在线" align="center">
+        <template slot-scope="scope">{{scope.row.isOnline}}</template>
         </el-table-column>
         <el-table-column label="操作" width="200" align="center">
           <template slot-scope="scope">
-            <el-button size="mini" @click="handleAdmin(scope.$index, scope.row)" type="text">分配权限</el-button>
-            <el-button size="mini" @click="handleChange(scope.$index, scope.row)" type="text">编辑</el-button>
+            <el-button size="mini" @click="handleAdmin(scope.$index, scope.row)" type="text">分配角色</el-button>
+            <el-button size="mini" @click="handleChange(scope.$index, scope.row)" type="text">权限详情</el-button>
             <el-button size="mini" @click="handleDelete(scope.$index, scope.row)" type="text">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
-      <el-dialog :title="'分配角色'" :visible.sync="adminVisible" >
+      <el-dialog :title="'分配角色'" :visible.sync="adminVisible" class="dialog-title" width="700px">
         <div  class="dialog-body" style="overflow: hidden">
-          <el-select v-model="tempRole" style="float: left;width: 60%;" :placeholder="tempRole">
+          <el-select v-model="tempRole" style="width: 60%;" :placeholder="tempRole">
             <el-option
               v-for="item in roleOptions"
               :key="item.value"
@@ -46,28 +49,6 @@
         </div>
       </el-dialog>
     </div>
-    <el-dialog title="编辑用户" :visible.sync="changeVisible" >
-      <div>
-      <el-form :model="changeTempData" ref="adminForm" label-width="150px" size="small" >
-        <el-form-item label="帐号名称:">
-          <el-input v-model="changeTempData.countName" style="width: 250px"></el-input>
-        </el-form-item>
-        <el-form-item label="平台名称:">
-          <el-input v-model="changeTempData.name" style="width: 250px"></el-input>
-        </el-form-item>
-        <el-form-item label="提交时间:">
-          <el-input v-model="changeTempData.time" style="width: 250px"></el-input>
-        </el-form-item>
-        <el-form-item label="权限等级:">
-          <el-input v-model="changeTempData.authorityLevel"  style="width: 250px"></el-input>
-        </el-form-item>
-      </el-form>
-      </div>
-      <span slot="footer" class="dialog-footer">
-        <el-button @click="changeVisible = false" size="small">取 消</el-button>
-        <el-button type="primary" @click="submitChange()" size="small">确 定</el-button>
-      </span>
-    </el-dialog>
     <div class="pagination-container">
       <el-pagination
         background
@@ -84,6 +65,7 @@
 </template>
 
 <script>
+  import eventBus from '@/assets/bus.js';
   const defaultListQuery = {
     pageNum: 1,
     pageSize: 10,
@@ -104,10 +86,14 @@
         pageTotal: 0,          //总条数
         searchList: [],       //执行查询操作后，满足查询条件的所有的目录信息的数组
         allList: [            //获取的所有的目录信息数组
-          { id: '1', countName: '管理员账号1', name: '无平台', time:'2019-06-10', authorityLevel:'超级管理员'},
-          { id: '2', countName: '管理员账号2', name: '无平台', time:'2019-07-10', authorityLevel:'管理员'},
-          { id: '3', countName: '物联网平台1', name: '智慧交通平台', time:'2019-08-10', authorityLevel:'用户'},
-          { id: '4', countName: '管理员账号2', name: '智慧医疗平台', time:'2019-09-10', authorityLevel:'用户'},
+          { id: '1', userName: '管理员账号1', platformIp: '192.168.1.1', registerTime:'2019-06-10', roleName:'超级管理员',isOnline:'1'},
+          { id: '2', userName: '管理员账号2', platformIp: '192.168.1.2', registerTime:'2019-06-10', roleName:'管理员',isOnline:'0'},
+          { id: '3', userName: '管理员账号3', platformIp: '192.168.1.3', registerTime:'2019-06-10', roleName:'管理员',isOnline:'1'},
+          { id: '4', userName: '管理员账号4', platformIp: '192.168.1.4', registerTime:'2019-06-10', roleName:'理员',isOnline:'0'},
+          { id: '5', userName: '管理员账号5', platformIp: '192.168.1.51', registerTime:'2019-06-10', roleName:'理员',isOnline:'0'},
+          { id: '6', userName: '管理员账号6', platformIp: '192.168.1.6', registerTime:'2019-06-10', roleName:'理员',isOnline:'0'},
+          { id: '7', userName: '管理员账号7', platformIp: '192.168.1.223', registerTime:'2019-06-10', roleName:'用户',isOnline:'1'},
+
         ],          //截取的当前要展示的目录信息数组
         list: [],
         changeData: {},
@@ -137,12 +123,20 @@
           content:null,
           orderIds:[]
         },
+        index : 0,
       }
     },
     created() {
       // this.getAllList();   //联调时打开
       // this.getSearchList(); //联调时打开
       this.changeList();
+    },
+    destroyed() {
+      console.log('destroyed')
+    },
+    beforeDestroy() {
+      console.log('beforeDestroy')
+      eventBus.$emit('auDetail',this.list[this.index]);
     },
     methods:{
       getAllList() {               //获取后端提供的所有目录信息
@@ -179,7 +173,7 @@
       },
       handleAdmin(index, row){
         this.adminVisible = true;
-        this.tempRole = row.authorityLevel;
+        this.tempRole = row.userLevel;
         this.index = index;
       },
       handleDelete(index, row){
@@ -217,9 +211,10 @@
         })
       },
       handleChange(index, row){
-        this.changeVisible = true;
+        eventBus.$emit('auDetail',this.list[index]);
         this.index = index;
-        this.changeTempData = row;
+        this.$router.push({path:'/authority/detail',query:this.list[index]});
+
       },
       deleteModify() {
         this.dialogFormVisible = false;
@@ -232,7 +227,7 @@
       },
       changeRole(){
         console.log(this.list[this.index]);
-        this.list[this.index].authorityLevel = this.tempRole;
+        this.list[this.index].userLevel = this.tempRole;
         this.adminVisible = false;
       }
     }

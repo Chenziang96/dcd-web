@@ -51,14 +51,14 @@ export default new Router({
           name: 'dirDetail',
           component: DirDetail,
           meta: {title: '平台目录详情'},
-          hidden:true
+          hidden: true
         }
       ]
     },
     {
       path: '/authority',
       component: layout,
-        redirect: '/authority/user',
+      redirect: '/authority/user',
       name: 'authority',
       meta: {title: '权限管理', icon: 'authority'},
       children: [
@@ -66,13 +66,19 @@ export default new Router({
           path: 'user',
           name: 'user',
           component: Authority,
-          meta: {title: '用户列表', icon: 'IoT_register'}
+          meta: {title: '用户列表', icon: 'IoT_register'},
+        },
+        {
+          path: 'detail',
+          name: 'detail',
+          component: () => import('@/views/authority/user/detail'),
+          hidden: true,
         },
         {
           path: 'role',
           name: 'role',
-          component: ()=> import('@/views/authority/role/index'),
-          meta: {title: '权限列表', icon: 'IoT_register'}
+          component: () => import('@/views/authority/role/index'),
+          meta: {title: '角色列表', icon: 'IoT_register'},
         },
       ]
     },
