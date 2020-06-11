@@ -7,7 +7,7 @@
     <div class="table-container">
       <el-table ref="orderTable" :data="list" style="width: 100%;" @selection-change="" border>
         <el-table-column label="编号" width="80" align="center">
-          <template slot-scope="scope">{{scope.row.id}}</template>
+          <template slot-scope="scope">{{scope.$index+1}}</template>
         </el-table-column>
         <el-table-column label="账号名称" width="180" align="center">
           <template slot-scope="scope">{{scope.row.userName}}</template>
@@ -22,7 +22,7 @@
           <template slot-scope="scope">{{scope.row.roleName}}</template>
         </el-table-column>
         <el-table-column label="是否在线" align="center">
-        <template slot-scope="scope">{{scope.row.isOnline}}</template>
+          <template slot-scope="scope">{{scope.row.onLine}}</template>
         </el-table-column>
         <el-table-column label="操作" width="200" align="center">
           <template slot-scope="scope">
@@ -66,6 +66,7 @@
 
 <script>
   import eventBus from '@/assets/bus.js';
+  import {getAllList} from '@/api/authority.js'
   const defaultListQuery = {
     pageNum: 1,
     pageSize: 10,
@@ -85,16 +86,7 @@
         adminVisible: false,
         pageTotal: 0,          //总条数
         searchList: [],       //执行查询操作后，满足查询条件的所有的目录信息的数组
-        allList: [            //获取的所有的目录信息数组
-          { id: '1', userName: '管理员账号1', platformIp: '192.168.1.1', registerTime:'2019-06-10', roleName:'超级管理员',isOnline:'1'},
-          { id: '2', userName: '管理员账号2', platformIp: '192.168.1.2', registerTime:'2019-06-10', roleName:'管理员',isOnline:'0'},
-          { id: '3', userName: '管理员账号3', platformIp: '192.168.1.3', registerTime:'2019-06-10', roleName:'管理员',isOnline:'1'},
-          { id: '4', userName: '管理员账号4', platformIp: '192.168.1.4', registerTime:'2019-06-10', roleName:'理员',isOnline:'0'},
-          { id: '5', userName: '管理员账号5', platformIp: '192.168.1.51', registerTime:'2019-06-10', roleName:'理员',isOnline:'0'},
-          { id: '6', userName: '管理员账号6', platformIp: '192.168.1.6', registerTime:'2019-06-10', roleName:'理员',isOnline:'0'},
-          { id: '7', userName: '管理员账号7', platformIp: '192.168.1.223', registerTime:'2019-06-10', roleName:'用户',isOnline:'1'},
-
-        ],          //截取的当前要展示的目录信息数组
+        allList: [],          //截取的当前要展示的目录信息数组
         list: [],
         changeData: {},
         changeVisible:false,
@@ -102,6 +94,7 @@
         initialData: {},
         operateType: null,
         multipleSelection: [],
+        row:[],
         tempRole:'', //暂存权限
         index:0, //表单中用到的数组目录
         roleOptions:[
@@ -114,8 +107,8 @@
             label:'管理员'
           },
           {
-            value:'用户',
-            label:'用户'
+            value:'普通用户',
+            label:'普通用户'
           },
         ],
         closeOrder:{
@@ -127,37 +120,25 @@
       }
     },
     created() {
-      // this.getAllList();   //联调时打开
-      // this.getSearchList(); //联调时打开
-      this.changeList();
-    },
-    destroyed() {
-      console.log('destroyed')
+      this.get1();
     },
     beforeDestroy() {
-      console.log('beforeDestroy')
       eventBus.$emit('auDetail',this.list[this.index]);
     },
     methods:{
-      getAllList() {               //获取后端提供的所有目录信息
+      get1(){
         this.$http({
           method: 'get',
-          url: ''
+          url: 'api/user/list',
         })
-          .then(function (res) {
+          .then((res)=> {
             console.log(res);
-            this.allList = res.data.data;               //第二个data是后端传递的数组名，可能需要修改
+            this.allList = res.data;   //第二个data是后端传递的数组名，可能需要修改
+            this.changeList();
           })
           .catch(function (error) {
             console.log(error);
           })
-      },
-      getSearchList() {                    //获取满足搜索条件的目录信息的数组
-        let i=0;
-        for( i=0; i<this.rows; i++ )
-        {
-
-        }
       },
       changeList() {               //截取需要展示在当前页的目录信息
         this.pageTotal = this.allList.length;
@@ -173,8 +154,7 @@
       },
       handleAdmin(index, row){
         this.adminVisible = true;
-        this.tempRole = row.userLevel;
-        this.index = index;
+        this.row = row;
       },
       handleDelete(index, row){
         this.$confirm('是否要删除该用户?', '提示', {
@@ -182,15 +162,11 @@
           cancelButtonText: '取消',
           type: 'warning'
         }).then(() => {
-            this.$message({
-              type: 'success',
-              message: '删除成功!'
-            });
+          this.$message({
+            type: 'success',
+            message: '删除成功!'
           });
-      },
-      submitChange(){
-        this.changeData[this.index] = this.changeTempData;
-        this.changeVisible =false;
+        });
       },
       deleteDir(ids){
         this.$confirm('是否要进行该删除操作?', '提示', {
@@ -211,22 +187,21 @@
         })
       },
       handleChange(index, row){
-        eventBus.$emit('auDetail',this.list[index]);
         this.index = index;
         this.$router.push({path:'/authority/detail',query:this.list[index]});
-
-      },
-      deleteModify() {
-        this.dialogFormVisible = false;
-        this.changeData = this.initialData;
-      },
-      reForm(){
-        this.listQuery.createTime='';
-        this.listQuery.orderIp='';
-        this.listQuery.orderPerson='';
       },
       changeRole(){
-        console.log(this.list[this.index]);
+        this.$http({
+          method: 'post',
+          url: 'api/user/insertUserNameAndRoleName?userName='+this.row.userName+'&roleName='+this.tempRole,
+        })
+          .then((res)=> {
+            console.log(res);
+            this.get1();
+          })
+          .catch(function (error) {
+            console.log(error);
+          })
         this.list[this.index].userLevel = this.tempRole;
         this.adminVisible = false;
       }

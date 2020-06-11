@@ -4,13 +4,19 @@
     </el-page-header>
     <div class="table-container">
       <el-table ref="orderTable" :data="list" style="width: 80%;margin: 0px auto" @selection-change="" border>
-        <el-table-column label="子用户名" align="center">
+        <el-table-column label="账户名" align="center">
           <template slot-scope="scope">{{scope.row.userName}}</template>
         </el-table-column>
         <el-table-column label="创建时间" align="center">
           <template slot-scope="scope">{{scope.row.registerTime}}</template>
         </el-table-column>
-        <el-table-column label="权限分配" align="center">
+        <el-table-column label="平台ip" align="center">
+          <template slot-scope="scope">{{scope.row.platformIp}}</template>
+        </el-table-column>
+        <el-table-column label="是否在线" align="center">
+          <template slot-scope="scope">{{scope.row.onLine}}</template>
+        </el-table-column>
+        <el-table-column label="角色信息" align="center">
           <template slot-scope="scope">{{scope.row.roleName}}</template>
         </el-table-column>
         <el-table-column label="操作" width="200" align="center">
@@ -79,12 +85,8 @@
         windowWidth:0,
         adminVisible:false,
         tempRole:'',
-        allList: [
-          {userName: '子账户1', registerTime: '2019-06-04', roleName: '用户'},
-          {userName: '子账户3', registerTime: '2019-06-04', roleName: '用户'},
-          {userName: '子账户4', registerTime: '2019-06-04', roleName: '用户'},
-          {userName: '子账户2', registerTime: '2019-06-04', roleName: '管理员'},
-        ],
+        allList: [],
+        row:[],
         roleOptions:[
           {
             value:'超级管理员',
@@ -103,16 +105,27 @@
     },
     created() {
       this.platform = this.$route.query;
-      this.changeList();
-      this.handleMargin();
-      console.log(this.platform)
+      this.getList();
     },
     methods: {
       goBack() {
         this.$router.back(-1);
       },
       getList(){
-
+        console.log('platform',this.platform)
+        this.$http({
+          method: 'get',
+          url: 'api/user/listByPlatformIp?platformIp='+this.platform.platformIp,
+        })
+          .then((res)=> {
+            console.log(res);
+            this.allList = res.data;   //第二个data是后端传递的数组名，可能需要修改
+            console.log(this.allList);
+            this.changeList();
+          })
+          .catch(function (error) {
+            console.log(error);
+          })
       },
       changeList() {               //截取需要展示在当前页的目录信息
         this.pageTotal = this.allList.length;
@@ -129,12 +142,26 @@
       handleCurrentChange() {            //改变当前页码后需要展示的目录信息的变化
         this.changeList();
       },
-      handleMargin() {
-        let width = window.innerWidth;
-        console.log(width);
+      changeRole(){
+        console.log(this.row);
+        console.log(this.tempRole);
+        this.$http({
+          method: 'post',
+          url: 'api/user/insertUserNameAndRoleName?userName='+this.row.userName+'&roleName='+this.tempRole,
+        })
+          .then((res)=> {
+            console.log(res);
+            this.get1();
+          })
+          .catch(function (error) {
+            console.log(error);
+          })
+        this.list[this.index].userLevel = this.tempRole;
+        this.adminVisible = false;
       },
-      handleAdmin(){
+      handleAdmin(index,row){
         this.adminVisible =true;
+        this.row = row;
       },
       changeRole(){
         //修改子账户角色信息

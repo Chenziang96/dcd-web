@@ -3,19 +3,21 @@
     <div class="login">
       <h1 class="h1">Login</h1>
       <div>
-        <input type="text" placeholder="Username" v-model="user.name" class="usn">
+        <input type="text" placeholder="Username" v-model="user.userName" class="usn">
       </div>
       <div>
-        <input type="password" placeholder="Password" v-model="user.password" class="psd">
+        <input type="password" placeholder="Password" v-model="user.pwd" class="psd">
       </div>
-      <button class="btn" @click="submit">sign in</button>
-<!--      <el-alert v-if="loginJudgment.flag1" title="用户名和密码正确，登录成功！" type="success"></el-alert>-->
-<!--      <el-alert v-else-if="loginJudgment.flag2" title="用户名或密码错误，登录失败！" type="error"></el-alert>-->
+      <button class="btn" @click="login()">sign in</button>
+      <!--      <el-alert v-if="loginJudgment.flag1" title="用户名和密码正确，登录成功！" type="success"></el-alert>-->
+      <!--      <el-alert v-else-if="loginJudgment.flag2" title="用户名或密码错误，登录失败！" type="error"></el-alert>-->
     </div>
   </div>
 </template>
 <script>
-  import user from '../../store'
+  // import user from '../../store'
+  import getters from "../../store/getters";
+  import Cookies from 'js-cookie'
   export default {
     name: "Login",
     data() {
@@ -25,24 +27,31 @@
           flag2: false,
         },
         user: {
-          name: '',
-          password: '',
+          userName: '',
+          pwd: '',
+          platformIp:'',
+          registerTime:'',
+          isOnline:'',
         }
       }
     },
     methods: {
-      submit() {
-        let that = this;
-        // that.loginJudgment.flag1 = false;
-        // that.loginJudgment.flag2 = false;
-        // if (this.user.name === '11' && this.user.password === '11') {
-        //   this.$store.commit('SET_LOGIN', true)
-        //   that.loginJudgment.flag1 = true;
-        // } else {
-        //   that.loginJudgment.flag2 = true;
-        // }
-        this.$router.push('/home');
-      }
+      login(){
+        let temp = this.user;
+        // console.log(getters.token());
+        let storage =window.localStorage;
+        console.log('1',Cookies.get());
+        this.$http.post('log/login',temp)
+          .then((res)=> {
+            console.log(res);
+
+            // storage.setItem('JESSIONID',)
+            this.$router.push('/home');
+          })
+          .catch(function (error) {
+            console.log(error);
+          })
+      },
     }
   }
 </script>
