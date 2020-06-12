@@ -115,5 +115,21 @@ export default new Router({
         },
       ]
     },
+    {
+      path: '/audit',
+      component: layout,
+      redirect: '/audit/index',
+      name: 'audit',
+      meta: {title: '审计管理', icon: 'audit'},
+      children: [
+        {
+          path: 'index',
+          name: 'index',
+          component: ()=> import('@/views/audit/index'),
+          meta: {title: '审计管理', icon: 'IoT_register'},
+        },
+
+      ]
+    }
   ]
 })
