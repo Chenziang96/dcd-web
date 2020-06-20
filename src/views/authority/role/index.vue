@@ -39,12 +39,21 @@
           <el-button type="primary" @click="changeRole()">确 定</el-button>
         </div>
       </el-dialog>
-      <el-dialog :title="'编辑角色'" :visible.sync="nameVisible" width="700px">
-        <div>新的角色名:</div>
-        <el-input v-model="nameInput"></el-input>
+      <el-dialog :title="'新增权限'" :visible.sync="authVisible" width="700px">
+        <div style="display: inline-block">
+          <span>新的角色名:</span>
+          <el-select v-model="select" multiple placeholder="请选择">
+            <el-option
+              v-for="item in authNum"
+              :key="item"
+              :label="item"
+              :value="item">
+            </el-option>
+          </el-select>
+        </div>
         <div slot="footer" class="dialog-footer">
-          <el-button @click="nameVisible = false">取 消</el-button>
-          <el-button type="primary" @click="changeName">确 定</el-button>
+          <el-button @click="authVisible = false">取 消</el-button>
+          <el-button type="primary" @click="changeAudt">确 定</el-button>
         </div>
       </el-dialog>
       <el-dialog title="权限详情" :visible.sync="detailVisible">
@@ -62,8 +71,8 @@
           </el-table-column>
         </el-table>
         <div slot="footer" class="dialog-footer">
-          <el-button type="primary" @click="outerVisible = false">新增权限</el-button>
-          <el-button type="danger" @click="innerVisible = true">确定</el-button>
+          <el-button type="primary" @click="authVisible = true">新增权限</el-button>
+          <el-button type="danger" @click="detailVisible = false">确定</el-button>
         </div>
       </el-dialog>
     </div>
@@ -103,8 +112,11 @@
         form: {}, //表单数据
         authName: [],
         nameInput: '',
-        nameVisible: false,
-        authNum: ['查看所有平台目录', '新增自身平台目录', '更新自身平台目录', '删除自身平台目录', '请求其他平台目录'],
+        name:'',
+        selectOptions:[{}],
+        select:[],
+        authVisible: false,
+        authNum: ['查看所有平台目录', '新增自身平台目录', '更新自身平台目录', '删除自身平台目录', '请求其他平台资源'],
         adminVisible: false,
         detailVisible: false,
         pageTotal: 0,          //总条数
@@ -135,22 +147,60 @@
     beforeDestroy() {
     },
     methods: {
-      changeName() {
-        console.log(this.nameInput);
+      changeAudt(){
+        console.log(this.select);
+        console.log(this.name);
         this.$http({
           method: 'post',
-          url: 'api/hibernate/role/findAllRole',
-          data: {}
+          url: 'api/hibernate/role/insertRoleNameAndPermissionNameList?roleName=' + this.name + '&permissionNameList=' + this.select,
         })
           .then((res) => {
             console.log(res);
+            for(let i=0;i<this.select.length;i++){
+              let temp = {'permissionName':this.select[i]}
+              this.gridData.push(temp);
+            }
+            console.log(this.select)
+            console.log(this.gridData)
+            this.authVisible = false;
           })
           .catch(function (error) {
             console.log(error);
           })
       },
-      deleteAuth() {
-
+      deleteAuth(index,row) {
+        console.log(this.name);
+        this.$confirm('是否要移除该权限?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          this.$http({
+            method: 'get',
+            url: 'api/hibernate/role/deleteByRoleNameAndPermissionName?roleName='+this.name+'&permissionName='+row.permissionName,
+          })
+            .then((res) => {
+              console.log(res);
+              this.$delete(this.gridData,index);
+              console.log(this.gridData)
+            })
+            .catch(function (error) {
+              console.log(error);
+            })
+        });
+      },
+      refresh(name){
+        this.$http({
+          method: 'get',
+          url: 'api/hibernate/role/findPermissionNameByRoleName?roleName=' + name,
+        })
+          .then((res) => {
+            console.log(res, 'res')
+            this.gridData.set()
+          })
+          .catch(function (error) {
+            console.log(error);
+          })
       },
       addRole() {
         this.roleVisible = true;
@@ -182,8 +232,8 @@
         this.changeList();
       },
       handleAdmin(row) {
-        let name = row.roleName;
-        console.log('row', name);
+        this.name = row.roleName || this.name;
+        console.log('row', this.name);
         this.$http({
           method: 'get',
           url: 'api/hibernate/role/findPermissionNameByRoleName?roleName=' + row.roleName,
@@ -204,10 +254,18 @@
           cancelButtonText: '取消',
           type: 'warning'
         }).then(() => {
-          this.$message({
-            type: 'success',
-            message: '删除成功!'
-          });
+          console.log(row.roleName)
+          this.$http({
+            method: 'post',
+            url: 'api/hibernate/role/delete?roleName='+row.roleName,
+          })
+            .then((res) => {
+              console.log(res);
+              this.get1();
+            })
+            .catch(function (error) {
+              console.log(error);
+            })
         });
       },
       deleteDir(ids) {
@@ -233,13 +291,15 @@
         this.$router.push({path: '/authority/detail', query: this.list[index]});
       },
       change1() {
+        console.log(this.authName);
         this.$http({
           method: 'post',
-          url: 'api/role/insertRoleNameAndPermissionNameList?roleName=' + this.form.name + '&permissionNameList=' + this.authName,
+          url: 'api/hibernate/role/insertRoleNameAndPermissionNameList?roleName=' + this.form.name + '&permissionNameList=' + this.authName,
         })
           .then((res) => {
             console.log(res);
             this.get1();
+            this.roleVisible = false;
           })
           .catch(function (error) {
             console.log(error);
@@ -250,7 +310,7 @@
         console.log(postData)
         this.$http({
           method: 'post',
-          url: 'api/role/insert',
+          url: 'api/hibernate/role/insert',
           data: postData,
         })
           .then((res) => {
