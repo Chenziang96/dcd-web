@@ -61,6 +61,19 @@
         :total="pageTotal">
       </el-pagination>
     </div>
+    <el-dialog title="权限详情" :visible.sync="detailVisible">
+      <el-table ref="orderTable" :data="gridData" style="width: 100%;" @selection-change="" border>
+        <el-table-column label="编号" width="80" align="center">
+          <template slot-scope="scope">{{scope.$index+1}}</template>
+        </el-table-column>
+        <el-table-column label="权限名称" align="center">
+          <template slot-scope="scope">{{scope.row.permissionName}}</template>
+        </el-table-column>
+      </el-table>
+      <div slot="footer" class="dialog-footer">
+        <el-button type="danger" @click="detailVisible = false">确定</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
@@ -89,6 +102,8 @@
         allList: [],          //截取的当前要展示的目录信息数组
         list: [],
         changeData: {},
+        gridData: [],
+        detailVisible: false,
         changeVisible:false,
         changeTempData:[],
         initialData: {},
@@ -188,7 +203,22 @@
       },
       handleChange(index, row){
         this.index = index;
-        this.$router.push({path:'/authority/detail',query:this.list[index]});
+        // this.$router.push({path:'/authority/detail',query:this.list[index]});
+        this.detailVisible=true;
+        this.name = row.roleName || this.name;
+        console.log('row', this.name);
+        this.$http({
+          method: 'get',
+          url: 'api/hibernate/role/findPermissionNameByRoleName?roleName=' + row.roleName,
+        })
+          .then((res) => {
+            console.log(res, 'res')
+            this.gridData = res.data;
+            this.detailVisible = true;
+          })
+          .catch(function (error) {
+            console.log(error);
+          })
       },
       changeRole(){
         this.$http({
