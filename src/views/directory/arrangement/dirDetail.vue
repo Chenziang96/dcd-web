@@ -38,12 +38,8 @@
         <el-table-column label="操作" width="200" align="center">
           <template slot-scope="scope">
             <el-button size="mini" @click="handleDetail(scope.$index, scope.row)" type="text">查看详情</el-button>
-            <el-button size="mini" @click="handleChange(scope.$index, scope.row)" v-show="1"
-                       type="text">编辑目录
-            </el-button>
-            <el-button size="mini" @click="handleDelete(scope.$index, scope.row)" v-show="1"
-                       type="text">删除目录
-            </el-button>
+            <el-button size="mini" @click="handleChange(scope.$index, scope.row)" v-show="1" type="text">编辑目录</el-button>
+            <el-button size="mini" @click="handleDelete(scope.$index, scope.row)" v-show="1" type="text">删除目录</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -79,8 +75,7 @@
       </el-dialog>
 
       <!--编辑目录dialog-->
-      <el-dialog title="编辑目录" :visible.sync="dialogFormVisible" class="dialog-title"
-                 width="600px">
+      <el-dialog title="编辑目录" :visible.sync="dialogFormVisible" class="dialog-title" width="600px">
         <el-form :model="dirChangeData" label-width="80px">
           <el-form-item label="资源类型">
             <el-input v-model="dirChangeData.resourceType"></el-input>
@@ -350,6 +345,7 @@
         let that = this;
         this.$http({
           method: 'post',
+          //这里的url是写死的状态，后面的userName=seu，最后需要修改成动态的获取userName=  ***
           url: '/api/requestfilter/directory/updateDirectory?userName=seu',
           data: temp,
         })

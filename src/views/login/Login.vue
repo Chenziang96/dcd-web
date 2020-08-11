@@ -39,12 +39,11 @@
       login(){
         let temp = this.user;
         // console.log(getters.token());
-        let storage =window.localStorage;
+        let storage = window.localStorage;
         console.log('1',Cookies.get());
         this.$http.post('log/login',temp)
           .then((res)=> {
             console.log(res);
-
             // storage.setItem('JESSIONID',)
             this.$router.push('/home');
           })

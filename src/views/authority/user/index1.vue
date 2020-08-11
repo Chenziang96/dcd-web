@@ -79,7 +79,7 @@
 
 <script>
   import eventBus from '@/assets/bus.js';
-  import {getAllList} from '@/api/authority.js'
+  import { getAllList } from '@/api/authority.js'
   const defaultListQuery = {
     pageNum: 1,
     pageSize: 10,
@@ -212,7 +212,7 @@
           url: 'api/hibernate/role/findPermissionNameByRoleName?roleName=' + row.roleName,
         })
           .then((res) => {
-            console.log(res, 'res')
+            console.log(res, 'res');
             this.gridData = res.data;
             this.detailVisible = true;
           })
@@ -224,6 +224,7 @@
         this.$http({
           method: 'post',
           url: 'api/user/insertUserNameAndRoleName?userName='+this.row.userName+'&roleName='+this.tempRole,
+          //后缀：userName=  告诉a后端是哪个用户   roleName=  告诉后端角色分配的修改后的结果
         })
           .then((res)=> {
             console.log(res);
@@ -231,7 +232,7 @@
           })
           .catch(function (error) {
             console.log(error);
-          })
+          });
         this.list[this.index].userLevel = this.tempRole;
         this.adminVisible = false;
       }

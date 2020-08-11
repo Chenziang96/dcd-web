@@ -52,6 +52,7 @@
           </template>
         </el-table-column>
       </el-table>
+
       <el-dialog title="修改信息" :visible.sync="dialogFormVisible" class="dialog-title" width="600px">
         <el-form :model="changeData" label-width="80px">
           <el-form-item label="平台名称">
@@ -214,7 +215,7 @@
           this.$http({
             method: 'post',
             url: '/api/requestfilter/device/updateDevice',
-            data:temp,
+            data: temp,
           })
             .then(function (res) {
               console.log(res);

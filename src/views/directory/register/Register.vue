@@ -75,7 +75,7 @@
             this.$http({
               method: 'post',
               url: 'api/requestfilter/device/insertDevice',
-              data:this.IoT,
+              data: this.IoT,
             })
               .then((res)=> {
                 console.log(res);
@@ -109,13 +109,12 @@
                 // const str = window.JSON.stringify(this.directory);     //把需要存储的对象IoT数据变成字符串（因为localstorage只能存储字符串数据）
                 // localStorage.setItem('IoTInfo', str);            //把数据存入localstorage中，名字为IoTInfo
                 this.submit();
-
               } else {
                 return false;
               }
             });
           },
-          removeDomain(item) {
+          /*removeDomain(item) {
             const index = this.IoT.dir.indexOf(item);
             if (index !== -1) {
               this.IoT.dir.splice(index, 1);
@@ -145,7 +144,7 @@
                 return false;
               }
             });
-          }
+          }*/
         }
     }
 </script>

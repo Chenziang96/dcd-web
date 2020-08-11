@@ -47,7 +47,7 @@
         this.$http({
           method: 'get',
           url: '/api/audit/getDirectoryAudit?userName='+this.listQuery.userName,
-          responseType:'blob'
+          responseType:'blob'   //对象内容不可修改
         })
           .then(function (res) {
             console.log(res);
@@ -58,7 +58,6 @@
           })
       },
       reForm() {
-
       },
       selectFile(e) {
         // var fileObj = e.target.files[0]; // js 获取文件对象
@@ -68,9 +67,9 @@
         // console.log("wenjianming:" + name + "daxiao:" + size);//wenjianming:testfile.txtdaxiao:20
         var reader = new FileReader();//这是核心！！读取操作都是由它完成的
         reader.readAsText(e);
-        console.log('1111')
+        console.log('1111');
 //readAsText(file,[encoding]):将文件读取为文本，encoding缺省为UTF-8   readAsText(selectedFile,'UTF-8')
-        reader.onload = function (oFREvent) {//读取完毕从中取值
+        reader.onload = function (oFREvent) {   //读取完毕从中取值
           var pointsTxt = oFREvent.target.result;
           console.log(pointsTxt);
           let divBody = document.getElementById('content');

@@ -112,7 +112,7 @@
         this.$router.back(-1);
       },
       getList(){
-        console.log('platform',this.platform)
+        console.log('platform',this.platform);
         this.$http({
           method: 'get',
           url: 'api/user/listByPlatformIp?platformIp='+this.platform.platformIp,
@@ -155,7 +155,7 @@
           })
           .catch(function (error) {
             console.log(error);
-          })
+          });
         this.list[this.index].userLevel = this.tempRole;
         this.adminVisible = false;
       },

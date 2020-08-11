@@ -5,10 +5,9 @@ import layout from '../views/layout/Layout'
 import Register from '@/views/directory/register/Register'
 import ArrangeIndex from '@/views/directory/arrangement/index'
 import DirDetail from '@/views/directory/arrangement/dirDetail'
-import Authority from '@/views/authority/user/index'
-import Send from '@/views/transmit/send/index'
-import DataSend from '@/views/transmit/send/dataSend'
-import Request from '@/views/transmit/receive/index'
+import Current from '@/views/request/current/index'
+import Past from '@/views/request/past/index'
+
 
 
 Vue.use(Router);
@@ -60,58 +59,56 @@ export default new Router({
       ]
     },
     {
-      path: '/transmit',
+      path: '/request',
       component: layout,
-      redirect: '/transmit/send',
-      name: 'transmit',
+      redirect: '/request/current',
+      name: 'request',
       meta: {title: '数据传输', icon: 'send'},
       children: [
         {
-          path: 'request',
-          name: 'request',
-          component: Request,
-          meta: {title: '请求发送', icon: 'request_send'}
+          path: 'current',
+          name: 'current',
+          component: Current,
+          meta: {title: '正在处理', icon: 'request_current'}
         },
         {
-          path: 'send',
-          name: 'send',
-          component: Send,
-          meta: {title: '数据发送', icon: 'data_send'}
+          path: 'past',
+          name: 'past',
+          component: Past,
+          meta: {title: '历史记录', icon: 'request_past'}
         },
-        {
-          path: 'dataSend',
-          name: 'dataSend',
-          component: DataSend,
-          meta: {title: '目录数据发送'},
-          hidden:true
-        },
-
       ]
     },
     {
       path: '/authority',
       component: layout,
-      redirect: '/authority/user',
+      redirect: '/authority/userGroup',
       name: 'authority',
       meta: {title: '权限管理', icon: 'authority'},
       children: [
         {
-          path: 'user',
-          name: 'user',
-          component: Authority,
-          meta: {title: '用户列表', icon: 'IoT_register'},
+          path: 'userGroup',
+          name: 'userGroup',
+          component: () => import('@/views/authority/userGroup/index'),
+          meta: {title: '用户组列表', icon: 'userGroup'},
         },
         {
           path: 'detail',
           name: 'detail',
-          component: () => import('@/views/authority/user/detail'),
+          component: () => import('@/views/authority/userGroup/detail'),
           hidden: true,
         },
         {
           path: 'role',
           name: 'role',
           component: () => import('@/views/authority/role/index'),
-          meta: {title: '角色列表', icon: 'IoT_register'},
+          meta: {title: '角色列表', icon: 'role'},
+        },
+        {
+          path: 'permission',
+          name: 'permission',
+          component: () => import('@/views/authority/permission/index'),
+          meta: {title: '权限列表', icon: 'permission'},
         },
       ]
     },
