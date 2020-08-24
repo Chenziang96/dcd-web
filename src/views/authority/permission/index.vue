@@ -1,5 +1,3 @@
-
-<!--????????-->
 <template> 
   <div class="app-container">
     <el-card class="operate-container" shadow="never">
@@ -55,7 +53,7 @@
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="deleteAdd">取 消</el-button>
-        <el-button type="danger" @click="confirmAdd">确 定</el-button>
+        <el-button :plain="true" type="danger" @click="confirmAdd">确 定</el-button>
       </div>
     </el-dialog>
 
@@ -91,27 +89,17 @@
     data() {
       return {
         listQuery: Object.assign({}, defaultListQuery),
-        permissionDetailVisible: false,
         pageTotal: 0,          //总条数
         allList: [],          //截取的当前要展示的目录信息数组
         list: [],
-        permissionList: [
-          { id: 1, permissionName: "查看所有平台目录", description: "查看所有平台目录" },
-          { id: 2, permissionName: "新增自身平台目录", description: "新增自身平台目录" },
-          { id: 3, permissionName: "更新自身平台目录", description: "更新自身平台目录" },
-          { id: 4, permissionName: "删除自身平台目录", description: "删除自身平台目录" },
-          { id: 5, permissionName: "请求其他平台资源", description: "请求其他平台资源" },
-          { id: 6, permissionName: "RBAC分配", description: "RBAC分配" },
-          { id: 7, permissionName: "其他", description: "其他" },
-          { id: 8, permissionName: "查看共享互通策略", description: "查看共享互通策略" },
-          { id: 9, permissionName: "新增共享互通策略", description: "新增共享互通策略" },
-          { id: 10, permissionName: "更新共享互通策略", description: "更新共享互通策略" },
-          { id: 11, permissionName: "删除共享互通策略", description: "删除共享互通策略" }
-        ],
+
+        //对应的编辑权限功能
         permissionChange: { id: null, permissionName: null, description: null },
         changeDialogFormVisible: false,
+
+        //对应的新增权限功能
         permissionAdd: { permissionName: null, description: null },
-        addDialogFormVisible: false
+        addDialogFormVisible: false,
       }
     },
     created() {
@@ -119,8 +107,19 @@
     },
     methods:{
       get1(){
-        this.allList = this.permissionList;
-        this.changeList();
+        let that = this;
+        this.$http({
+          method: 'get',
+          url: '/api/b/permission/findAll'
+        })
+          .then(function (res) {
+            console.log(res);
+            that.allList = res.data;              //第二个data是后端传递的数组名，可能需要修改
+            that.changeList();
+          })
+          .catch(function (error) {
+            console.log(error);
+          })
       },
       changeList() {               //截取需要展示在当前页的目录信息
         this.pageTotal = this.allList.length;
@@ -134,12 +133,8 @@
       handleCurrentChange() {            //改变当前页码后需要展示的目录信息的变化
         this.changeList();
       },
-      userDetail(index, row){
-        this.$router.push({path:'/authority/detail',query: row})
-      },
-      permissionDetail(index, row){
-        this.permissionDetailVisible = true;
-      },
+
+      //对应的编辑权限功能
       handleChange(index, row){
         this.changeDialogFormVisible = true;
         this.permissionChange.id = row.id;
@@ -153,21 +148,34 @@
         this.permissionChange.description = null;
       },
       confirmModify() {
+        let that = this;
         this.$confirm('是否要进行该编辑操作?', '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
-          type: 'warning'
+          type: 'warning',
+          center: true
         }).then(() => {
-          for (let j = 0; j < this.permissionList.length; j++) {
-            if(this.permissionList[j].id === this.permissionChange.id)
-            {
-              this.permissionList[j].permissionName = this.permissionChange.permissionName;
-              this.permissionList[j].description = this.permissionChange.description;
-            }
-          }
-          this.changeDialogFormVisible = false;
+          this.$http({
+            method: 'post',
+            url: '/api/b/permission/updateById?id='+this.permissionChange.id+'&permissionName='+this.permissionChange.permissionName+'&description='+this.permissionChange.description,
+          })
+            .then(function (res) {
+              that.$message({
+                message: res.data.info,
+                type: res.data.status
+              });
+            })
+            .catch(function (error) {
+              console.log(error);
+            })
+          that.changeDialogFormVisible = false;
+          that.sleep(500).then(() => {
+            that.get1();
+          })
         })
       },
+
+      //对应的新增权限功能
       handleAdd() {
         this.addDialogFormVisible = true;
       },
@@ -177,35 +185,69 @@
         this.permissionAdd.description = null;
       },
       confirmAdd() {
-        this.$confirm('是否要进行该编辑操作?', '提示', {
+        let that = this;
+        this.$confirm('是否要进行该新增操作?', '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
-          type: 'warning'
+          type: 'warning',
+          center: true
         }).then(() => {
-          this.permissionList.push({
-            id: this.permissionList.length + 1,
-            permissionName: this.permissionAdd.permissionName,
-            description: this.permissionAdd.description
-          });
-          this.permissionAdd.permissionName = null;
-          this.permissionAdd.description = null;
-          this.addDialogFormVisible = false;
-          this.changeList();
+          let temp = this.permissionAdd;
+          console.log(temp);
+          this.$http({
+            method: 'post',
+            url: '/api/b/permission/insert',
+            data: temp
+          })
+            .then(function (res) {
+              that.$message({
+                message: res.data.info,
+                type: res.data.status
+              });
+              that.permissionAdd.permissionName = null;
+              that.permissionAdd.description = null;
+            })
+            .catch(function (error) {
+              console.log(error);
+            })
+          that.sleep(500).then(() => {
+            that.get1();
+          })
         });
+        that.addDialogFormVisible = false;
       },
+
+      //对应的删除权限功能
       handleDelete(index, row) {
+        let that = this;
         this.$confirm('是否要进行该删除操作?', '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
-          type: 'warning'
+          type: 'warning',
+          center: true
         }).then(() => {
-          this.permissionList.splice(this.listQuery.pageSize*(this.listQuery.pageNum-1)+index,1);
-          if(this.permissionList.length/this.listQuery.pageSize === this.listQuery.pageNum-1)
-          {
-            this.listQuery.pageNum = this.listQuery.pageNum-1;
-          }
-          this.changeList();
+          this.$http({
+            method: 'post',
+            url: '/api/b/permission/deleteByPermissionName?permissionName='+row.permissionName,
+          })
+            .then(function (res) {
+              that.$message({
+                message: res.data.info,
+                type: res.data.status
+              });
+            })
+            .catch(function (error) {
+
+            })
+          that.sleep(500).then(() => {
+            that.get1();
+          })
         });
+      },
+
+      //延迟时间
+      sleep (time) {
+        return new Promise((resolve) => setTimeout(resolve, time));
       }
     }
   }
@@ -216,4 +258,3 @@
     margin-bottom: 20px;
   }
 </style>
-

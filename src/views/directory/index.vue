@@ -27,8 +27,6 @@
     </el-card>
     <div class="table-container">
       <el-table ref="orderTable" :data="list" style="width: 100%;" @selection-change="" border>
-        <el-table-column type="selection" width="60" align="center">
-        </el-table-column>
         <el-table-column label="编号" width="80" align="center">
           <template slot-scope="scope">{{scope.$index+1}}</template>
         </el-table-column>
@@ -47,29 +45,10 @@
         <el-table-column label="操作" width="200" align="center">
           <template slot-scope="scope">
             <el-button size="mini" @click="handleDetail(scope.$index, scope.row)" type="text">查看详情</el-button>
-            <el-button size="mini" @click="handleChange(scope.$index, scope.row)" v-show="1" type="text">编辑平台</el-button>
-            <el-button size="mini" @click="handleDelete(scope.$index, scope.row)" v-show="1" type="text">删除平台</el-button>
           </template>
         </el-table-column>
       </el-table>
 
-      <el-dialog title="修改信息" :visible.sync="dialogFormVisible" class="dialog-title" width="600px">
-        <el-form :model="changeData" label-width="80px">
-          <el-form-item label="平台名称">
-            <el-input v-model="changeData.platformName"></el-input>
-          </el-form-item>
-          <el-form-item label="平台ip">
-            <el-input v-model="changeData.platformIp"></el-input>
-          </el-form-item>
-          <el-form-item label="系统类型">
-            <el-input v-model="changeData.os"></el-input>
-          </el-form-item>
-        </el-form>
-        <div slot="footer" class="dialog-footer">
-          <el-button @click="deleteModify">取 消</el-button>
-          <el-button type="danger" @click="confirmModify">确 定</el-button>
-        </div>
-      </el-dialog>
     </div>
     <div class="pagination-container">
       <el-pagination
@@ -102,52 +81,28 @@
       return {
         listQuery: Object.assign({}, defaultListQuery),
         listLoading: false,
-        selectProductCateValue: null,
-        dialogFormVisible: false,
         pageTotal: 0,          //总条数
-        searchList: [],       //执行查询操作后，满足查询条件的所有的目录信息的数组
         allList: [],     //获取的所有的目录信息数组
         list: [],
-        changeData: {
-          platformName: '',
-          platformIp: '',
-          os: ''
-        },
-        operateType: null,
-        multipleSelection: [],
-        closeOrder:{
-          dialogVisible:false,
-          content:null,
-          orderIds:[]
-        },
       }
     },
     mounted() {
-      this.getAllList();   //联调时打开
-      // this.getSearchList(); //联调时打开
+      this.get1();   //联调时打开
     },
     methods:{
-      getAllList() {               //获取后端提供的所有目录信息
+      get1() {               //获取后端提供的所有目录信息
         let that = this;
         this.$http({
           method: 'get',
-          url: '/api/requestfilter/device/getDeviceAll?userName=seu'
+          url: '/api/d/device/findAll'
         })
         .then(function (res) {
-          console.log(res);
           that.allList = res.data;               //第二个data是后端传递的数组名，可能需要修改
           that.changeList();
         })
         .catch(function (error) {
           console.log(error);
         })
-      },
-      getSearchList() {                    //获取满足搜索条件的目录信息的数组
-        let i=0;
-        for( i=0; i<this.rows; i++ )
-        {
-
-        }
       },
       changeList() {               //截取需要展示在当前页的目录信息
         this.pageTotal = this.allList.length;
@@ -165,69 +120,6 @@
       handleDetail(index, row){
         this.$router.push({path:'/directory/dirDetail',query: row})
       },
-      handleDelete(index, row){
-        console.log(row.platformIp);
-        let that = this;
-        this.$http({
-          method: 'get',
-          url: '/api/requestfilter/device/deleteDevice?platformIp='+row.platformIp,
-        })
-          .then(function (res) {
-            console.log(res);
-            that.$delete(that.list,index);
-          })
-          .catch(function (error) {
-            console.log(error);
-          })
-      },
-      deleteDir(ids){
-        this.$confirm('是否要进行该删除操作?', '提示', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning'
-        }).then(() => {
-         this.deleteSubmit();
-        })
-      },
-      deleteSubmit(){
-
-      },
-      handleChange(index, row){
-        this.dialogFormVisible = true;
-        this.changeData.os = row.os;
-        this.changeData.platformIp = row.platformIp;
-        this.changeData.platformName = row.platformName;
-      },
-      deleteModify() {
-        this.dialogFormVisible = false;
-        this.changeData.os = '';
-        this.changeData.platformIp = '';
-        this.changeData.platformName = '';
-      },
-      confirmModify() {
-        let temp  = this.changeData;
-        console.log(temp);
-        this.$confirm('是否要进行该编辑操作?', '提示', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning'
-        }).then(() => {
-          this.$http({
-            method: 'post',
-            url: '/api/requestfilter/device/updateDevice',
-            data: temp,
-          })
-            .then(function (res) {
-              console.log(res);
-            })
-            .catch(function (error) {
-              console.log(error);
-            })
-        })
-      },
-      changeForm(){
-
-      },
       reForm(){
         this.listQuery.createTime='';
         this.listQuery.orderIp='';
@@ -237,9 +129,5 @@
   }
 </script>
 <style scoped>
-  .dialog-title {
-    text-align: center;
-  }
-
 
 </style>

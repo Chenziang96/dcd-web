@@ -3,14 +3,18 @@
     <div class="login">
       <h1 class="h1">Login</h1>
       <div>
-        <input type="text" placeholder="Username" v-model="user.userName" class="usn">
+        <label>
+          <input type="text" placeholder="Username" v-model="user.userName" class="usn">
+        </label>
       </div>
       <div>
-        <input type="password" placeholder="Password" v-model="user.pwd" class="psd">
+        <label>
+          <input type="password" placeholder="Password" v-model="user.pwd" class="psd">
+        </label>
       </div>
       <button class="btn" @click="login()">sign in</button>
-      <!--      <el-alert v-if="loginJudgment.flag1" title="用户名和密码正确，登录成功！" type="success"></el-alert>-->
-      <!--      <el-alert v-else-if="loginJudgment.flag2" title="用户名或密码错误，登录失败！" type="error"></el-alert>-->
+<!--      <el-alert v-if="false" title="用户名和密码正确，登录成功！" type="success"></el-alert>-->
+<!--      <el-alert v-else-if="true" title="用户名或密码错误，登录失败！" type="error"></el-alert>-->
     </div>
   </div>
 </template>
@@ -22,10 +26,6 @@
     name: "Login",
     data() {
       return {
-        loginJudgment: {
-          flag1: false,
-          flag2: false,
-        },
         user: {
           userName: '',
           pwd: '',

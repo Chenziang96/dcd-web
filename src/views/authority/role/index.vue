@@ -111,58 +111,34 @@
     orderDir: null,
     createTime: null,
   };
-  const permissionData = [
-    "查看所有平台目录",
-    "新增自身平台目录",
-    "更新自身平台目录",
-    "删除自身平台目录",
-    "请求其他平台资源",
-    "RBAC分配",
-    "其他",
-    "查看共享互通策略",
-    "新增共享互通策略",
-    "更新共享互通策略",
-    "删除共享互通策略"
-  ];
   export default {
     name: "index",
     components:{},
     data() {
       return {
         listQuery: Object.assign({}, defaultListQuery),
-        permissionDetailVisible: false,
-        innerVisible: false,
         pageTotal: 0,          //总条数
         allList: [],          //截取的当前要展示的目录信息数组
         list: [],
-        roleList: [
-          { id: 1, roleName: "超级管理员", description: "超级管理员" },
-          { id: 2, roleName: "管理员", description: "管理员" },
-          { id: 3, roleName: "高级用户", description: "高级用户" },
-          { id: 4, roleName: "普通用户", description: "普通用户" },
-          { id: 5, roleName: "基本用户", description: "基本用户" }
-        ],
-        roleChange: { id: null, roleName: null, description: null },
+
+        //编辑角色
         changeDialogFormVisible: false,
-        permissionDetailData: [
-          "查看所有平台目录",
-          "新增自身平台目录",
-          "更新自身平台目录",
-          "删除自身平台目录",
-          "请求其他平台资源",
-          "RBAC分配",
-          "其他",
-          "查看共享互通策略",
-          "新增共享互通策略",
-          "更新共享互通策略",
-          "删除共享互通策略"
-        ],
-        permissionChangeData: [],
-        isIndeterminate: null,
-        permissions: permissionData,
+        roleChange: { id: null, roleName: null, description: null },
+
+        //权限详情查看
+        permissionDetailVisible: false,
+        permissionDetailData: [],
+        //权限分配
+        innerVisible: false,
         checkAll: null,
+        isIndeterminate: null,
+        permissions: [],
+        permissionChangeData: [],
+        rolePermissionChangeName: null,
+
+        //新增角色
         addDialogFormVisible: false,
-        roleAdd: {}
+        roleAdd: {},
       }
     },
     created() {
@@ -170,8 +146,19 @@
     },
     methods:{
       get1(){
-        this.allList = this.roleList;
-        this.changeList();
+        let that = this;
+        this.$http({
+          method: 'get',
+          url: '/api/b/role/findAll'
+        })
+          .then(function (res) {
+            console.log(res);
+            that.allList = res.data;              //第二个data是后端传递的数组名，可能需要修改
+            that.changeList();
+          })
+          .catch(function (error) {
+            console.log(error);
+          })
       },
       changeList() {               //截取需要展示在当前页的目录信息
         this.pageTotal = this.allList.length;
@@ -185,12 +172,8 @@
       handleCurrentChange() {            //改变当前页码后需要展示的目录信息的变化
         this.changeList();
       },
-      userDetail(index, row) {
-        this.$router.push({path:'/authority/detail',query: row})
-      },
-      permissionDetail(index, row) {
-        this.permissionDetailVisible = true;
-      },
+
+      //新增角色
       handleAdd() {
         this.addDialogFormVisible = true;
       },
@@ -200,22 +183,39 @@
         this.roleAdd.description = null;
       },
       confirmAdd() {
-        this.$confirm('是否要进行该编辑操作?', '提示', {
+        let that = this;
+        this.$confirm('是否要进行该新增操作?', '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
-          type: 'warning'
+          type: 'warning',
+          center: true
         }).then(() => {
-          this.roleList.push({
-            id: this.roleList.length + 1,
-            roleName: this.roleAdd.roleName,
-            description: this.roleAdd.description
-          });
-          this.roleAdd.roleName = null;
-          this.roleAdd.description = null;
-          this.addDialogFormVisible = false;
-          this.changeList();
+          let temp = this.roleAdd;
+          console.log(temp);
+          this.$http({
+            method: 'post',
+            url: '/api/b/role/insert',
+            data: temp
+          })
+            .then(function (res) {
+              that.$message({
+                message: res.data.info,
+                type: res.data.status
+              });
+              that.roleAdd.roleName = null;
+              that.roleAdd.description = null;
+            })
+            .catch(function (error) {
+              console.log(error);
+            })
+          that.sleep(500).then(() => {
+            that.get1();
+          })
         });
+        that.addDialogFormVisible = false;
       },
+
+      //编辑
       handleChange(index, row){
         this.changeDialogFormVisible = true;
         this.roleChange.id = row.id;
@@ -229,63 +229,148 @@
         this.roleChange.description = null;
       },
       confirmModify() {
+        let that = this;
         this.$confirm('是否要进行该编辑操作?', '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
-          type: 'warning'
+          type: 'warning',
+          center: true
         }).then(() => {
-          for (let j = 0; j < this.roleList.length; j++) {
-            if(this.roleList[j].id === this.roleChange.id)
-            {
-              this.roleList[j].roleName = this.roleChange.roleName;
-              this.roleList[j].description = this.roleChange.description;
-            }
-          }
-          this.changeDialogFormVisible = false;
+          this.$http({
+            method: 'post',
+            url: '/api/b/role/updateById?id='+this.roleChange.id+'&roleName='+this.roleChange.roleName+'&description='+this.roleChange.description,
+          })
+            .then(function (res) {
+              that.$message({
+                message: res.data.info,
+                type: res.data.status
+              });
+            })
+            .catch(function (error) {
+              console.log(error);
+            })
+          that.changeDialogFormVisible = false;
+          that.sleep(500).then(() => {
+            that.get1();
+          })
         })
       },
-      handleDelete(index, row) {
+
+      //删除角色
+      handleDelete(index,row) {
+        let that = this;
         this.$confirm('是否要进行该删除操作?', '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
-          type: 'warning'
+          type: 'warning',
+          center: true
         }).then(() => {
-          this.roleList.splice(this.listQuery.pageSize*(this.listQuery.pageNum-1)+index,1);
-          if(this.roleList.length/this.listQuery.pageSize === this.listQuery.pageNum-1)
-          {
-            this.listQuery.pageNum = this.listQuery.pageNum-1;
-          }
-          this.changeList();
+          this.$http({
+            method: 'post',
+            url: '/api/b/role/deleteByRoleName?roleName='+row.roleName,
+          })
+            .then(function (res) {
+              that.$message({
+                message: res.data.info,
+                type: res.data.status
+              });
+            })
+            .catch(function (error) {
+              console.log(error);
+            })
+          that.sleep(500).then(() => {
+            that.get1();
+          })
         });
       },
+
+      //权限详情
+      permissionDetail(index,row) {
+        this.permissionDetailVisible = true;
+        this.rolePermissionChangeName = row.roleName;
+        let that = this;
+        this.$http({
+          method: 'get',
+          url: '/api/b/rolePermission/findPermissionNameByRoleName?roleName='+row.roleName,
+        })
+          .then(function (res) {
+            console.log(res);
+            that.permissionDetailData = res.data;
+            that.changeList();
+          })
+          .catch(function (error) {
+            console.log(error);
+          })
+      },
+      //权限分配
       permissionDistribution() {
-        this.permissionChangeData = [];
-        for (let i = 0; i < this.permissionDetailData.length; i++) {
-          this.permissionChangeData[i] = this.permissionDetailData[i];
+        let that = this;
+        this.$http({
+          method: 'get',
+          url: '/api/b/permission/getAllPermissionName',
+        })
+          .then(function (res) {
+            console.log(res);
+            that.permissions = res.data;
+          })
+          .catch(function (error) {
+            console.log(error);
+          })
+        that.permissionChangeData = [];
+        for (let i = 0; i < that.permissionDetailData.length; i++) {
+          that.permissionChangeData[i] = that.permissionDetailData[i];
         }
-        this.innerVisible = true;
-        let checkedCount = this.permissionChangeData.length;
-        this.checkAll = checkedCount === this.permissions.length;
-        this.isIndeterminate = checkedCount > 0 && checkedCount < this.permissions.length;
+        that.innerVisible = true;
+        let checkedCount = that.permissionChangeData.length;
+        that.checkAll = checkedCount === that.permissions.length;
+        that.isIndeterminate = checkedCount > 0 && checkedCount < that.permissions.length;
       },
       confirmDistribution() {
-        this.innerVisible = false;
-        this.permissionDetailData = [];
-        for (let i = 0; i < this.permissionChangeData.length; i++) {
-          this.permissionDetailData[i] = this.permissionChangeData[i];
+        let that = this;
+        this.$confirm('是否要进行该权限分配操作?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning',
+          center: true
+        }).then(() => {
+          let temp = this.permissionDetailData;
+          console.log(temp);
+          this.$http({
+            method: 'post',
+            url: '/api/b/rolePermission/insertRoleNameAndPermissionNameList?roleName='+this.rolePermissionChangeName+'&permissionNameList='+this.permissionChangeData,
+          })
+            .then(function (res) {
+              that.$message({
+                message: res.data.info,
+                type: res.data.status
+              });
+            })
+            .catch(function (error) {
+              console.log(error);
+            })
+        })
+        that.innerVisible = false;
+        that.permissionDetailData = [];
+        for (let i = 0; i < that.permissionChangeData.length; i++) {
+          that.permissionDetailData[i] = that.permissionChangeData[i];
         }
       },
       deleteDistribution() {
         this.innerVisible = false;
       },
       handleCheckAllChange(val) {
-        this.permissionChangeData = val ? permissionData : [];
+        this.permissionChangeData = val ? this.permissions : [];
         this.isIndeterminate = false;
       },
       handleCheckedCitiesChange(value) {
         let checkedCount = value.length;
         this.checkAll = checkedCount === this.permissions.length;
         this.isIndeterminate = checkedCount > 0 && checkedCount < this.permissions.length;
+      },
+
+      //延迟时间
+      sleep (time) {
+        return new Promise((resolve) => setTimeout(resolve, time));
       }
     }
   }

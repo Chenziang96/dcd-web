@@ -2,13 +2,10 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import Login from '@/views/login/Login'
 import layout from '../views/layout/Layout'
-import Register from '@/views/directory/register/Register'
-import ArrangeIndex from '@/views/directory/arrangement/index'
-import DirDetail from '@/views/directory/arrangement/dirDetail'
+import Platform from '@/views/directory/index'
+import DirDetail from '@/views/directory/dirDetail'
 import Current from '@/views/request/current/index'
 import Past from '@/views/request/past/index'
-
-
 
 Vue.use(Router);
 
@@ -33,21 +30,15 @@ export default new Router({
     {
       path: '/directory',
       component: layout,
-      redirect: '/directory/register',
+      redirect: '/directory/platform',
       name: 'directory',
-      meta: {title: '目录管理', icon: 'register'},
+      meta: {title: '目录管理', icon: 'arrange'},
       children: [
         {
-          path: 'register',
-          name: 'register',
-          component: Register,
-          meta: {title: '平台注册', icon: 'IoT_register'}
-        },
-        {
-          path: 'arrange',
-          name: 'arrange',
-          component: ArrangeIndex,
-          meta: {title: '平台信息', icon: 'IoT_arrangement'}
+          path: 'platform',
+          name: 'platform',
+          component: Platform,
+          meta: {title: '平台信息', icon: 'platform'}
         },
         {
           path: 'dirDetail',
@@ -69,7 +60,7 @@ export default new Router({
           path: 'current',
           name: 'current',
           component: Current,
-          meta: {title: '正在处理', icon: 'request_current'}
+          meta: {title: '请求详情', icon: 'request_detail'}
         },
         {
           path: 'past',
@@ -93,10 +84,10 @@ export default new Router({
           meta: {title: '用户组列表', icon: 'userGroup'},
         },
         {
-          path: 'detail',
-          name: 'detail',
-          component: () => import('@/views/authority/userGroup/detail'),
-          hidden: true,
+          path: 'user',
+          name: 'user',
+          component: () => import('@/views/authority/user/index'),
+          meta: {title: '用户列表', icon: 'user'},
         },
         {
           path: 'role',
@@ -113,6 +104,21 @@ export default new Router({
       ]
     },
     {
+      path: '/rules',
+      component: layout,
+      redirect: '/rules/index',
+      name: 'rules',
+      meta: {title: '规则配置', icon: 'rules'},
+      children: [
+        {
+          path: 'index',
+          name: 'index',
+          component: ()=> import('@/views/rules/index'),
+          meta: {title: '规则配置', icon: 'rules'},
+        },
+      ]
+    },
+    {
       path: '/audit',
       component: layout,
       redirect: '/audit/index',
@@ -125,7 +131,6 @@ export default new Router({
           component: ()=> import('@/views/audit/index'),
           meta: {title: '审计管理', icon: 'IoT_register'},
         },
-
       ]
     }
   ]
