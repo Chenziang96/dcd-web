@@ -14,50 +14,56 @@
     <div class="table-container">
       <el-table ref="orderTable" :data="list" style="width: 100%;" @selection-change="" border>
         <el-table-column label="时间" width="180" align="center">
-          <template slot-scope="scope">{{scope.row.time}}</template>
+          <template slot-scope="scope">{{scope.row.requestTime}}</template>
         </el-table-column>
         <el-table-column label="用户名" width="180" align="center">
           <template slot-scope="scope">{{scope.row.userName}}</template>
         </el-table-column>
         <el-table-column label="原平台" width="180" align="center">
-          <template slot-scope="scope">{{scope.row.originalPlatform}}</template>
+          <template slot-scope="scope">{{scope.row.srcPlatform}}</template>
         </el-table-column>
         <el-table-column label="目的平台" width="180" align="center">
-          <template slot-scope="scope">{{scope.row.destinationPlatform}}</template>
+          <template slot-scope="scope">{{scope.row.dstPlatform}}</template>
         </el-table-column>
         <el-table-column label="资源类型" width="180" align="center">
           <template slot-scope="scope">{{scope.row.resourceType}}</template>
         </el-table-column>
         <el-table-column label="目录名称" align="center">
-          <template slot-scope="scope">{{scope.row.dirName }}</template>
+          <template slot-scope="scope">{{scope.row.resourceName }}</template>
         </el-table-column>
         <el-table-column label="状态" width="180" align="center">
           <template slot-scope="scope">
-            <i class="el-icon-error" v-show="scope.row.status===-1"></i>
-            <i class="el-icon-question" v-show="scope.row.status===0"></i>
-            <i class="el-icon-success" v-show="scope.row.status===1"></i>
-            <el-tag size="medium" type="danger" v-show="scope.row.status===-1">处理失败</el-tag>
-            <el-tag size="medium" type="warning" v-show="scope.row.status===0">正在处理</el-tag>
-            <el-tag size="medium" type="success" v-show="scope.row.status===1">处理成功</el-tag>
+            <div v-show="scope.row.requestStatus===0">
+              <i class="el-icon-question"></i>
+              <el-tag size="medium" type="warning">正在处理</el-tag>
+            </div>
+            <div v-show="scope.row.requestStatus===1">
+              <i class="el-icon-success"></i>
+              <el-tag size="medium" type="success">处理成功</el-tag>
+            </div>
+            <div v-show="scope.row.requestStatus===2">
+              <i class="el-icon-error"></i>
+              <el-tag size="medium" type="danger">处理失败</el-tag>
+            </div>
           </template>
         </el-table-column>
         <el-table-column label="操作" width="180" align="center">
           <template slot-scope="scope">
-            <el-button size="mini" @click="handleDetail(scope.$index, scope.row)" type="text">查看详情</el-button>
+            <el-button icon="el-icon-view" size="small" @click="handleRouter(scope.$index, scope.row)" type="success">查看详情</el-button>
           </template>
         </el-table-column>
       </el-table>
     </div>
 
-    <el-dialog title="请求处理详情" :visible.sync="dialogTableVisible" align="center" width="800px">
+    <el-dialog title="请求处理详情" :visible.sync="dialogTableVisible" align="center" width="600px">
       <div class="block">
         <el-timeline>
           <el-timeline-item
             v-for="(flag, index) in flag"
             :key="index"
-            :type="flag.type"
-            :timestamp="flag.timestamp">
-            {{flag.content}}
+            :type="flag.stepStatus"
+            :timestamp="flag.stepTime">
+            {{flag.info}}
           </el-timeline-item>
         </el-timeline>
       </div>
@@ -93,47 +99,6 @@
         data() {
           return {
             listQuery: Object.assign({}, defaultListQuery),
-            request: [
-              { time: "2020-8-20", userName: "用户a", originalPlatform: "物联网平台1", destinationPlatform: "物联网平台2",
-                resourceType: "图片", dirName: "图片1", status: 0,
-                data:[
-                  { content: '请求符合权限', timestamp: '2020-8-20 18:00', type: 'success'},
-                  { content: '请求成功发送至目的平台', timestamp: '2020-8-20 18:15', type: 'success' },
-                  { content: '成功接收到目的平台的数据', timestamp: '2020-8-20 18:30', type: 'success' },
-                  { content: '数据过滤成功', timestamp: '2020-8-20 18:40', type: 'success' },
-                  { content: '发送失败，未能将数据发送到原平台', timestamp: '2018-8-20 18:46', type: 'danger' }
-                ]
-              },
-              { time: "2020-8-20", userName: "用户c", originalPlatform: "物联网平台4", destinationPlatform: "物联网平台2",
-                resourceType: "图片", dirName: "图片5", status: 1,
-                data:[
-                  { content: '请求符合权限', timestamp: '2020-8-20 20:00', type: 'success'},
-                  { content: '请求成功发送至目的平台', timestamp: '2020-8-20 20:15', type: 'success' },
-                  { content: '成功接收到目的平台的数据', timestamp: '2020-8-20 20:30', type: 'success' },
-                  { content: '数据过滤成功', timestamp: '2020-8-20 20:40', type: 'success' },
-                  { content: '成功发送数据到原平台', timestamp: '2020-8-20 20:50', type: 'success' }
-                ]
-              },
-              { time: "2020-8-19", userName: "用户s", originalPlatform: "物联网平台3", destinationPlatform: "物联网平台1",
-                resourceType: "视频", dirName: "视频3", status: -1,
-                data:[
-                  { content: '请求符合权限', timestamp: '2020-8-19 12:00', type: 'success'},
-                  { content: '请求成功发送至目的平台', timestamp: '2020-8-19 12:15', type: 'success' },
-                  { content: '成功接收到目的平台的数据', timestamp: '2020-8-19 12:30', type: 'success' },
-                  { content: '数据过滤失败', timestamp: '2020-8-19 12:40', type: 'danger' }
-                ]
-              },
-              { time: "2020-8-19", userName: "用户b", originalPlatform: "物联网平台2", destinationPlatform: "物联网平台3",
-                resourceType: "文档", dirName: "文档2", status: -1,
-                data:[
-                  { content: '请求符合权限', timestamp: '2020-8-19 9:00', type: 'success'},
-                  { content: '请求成功发送至目的平台', timestamp: '2020-8-19 9:15', type: 'success' },
-                  { content: '成功接收到目的平台的数据', timestamp: '2020-8-19 9:20', type: 'success' },
-                  { content: '数据过滤成功', timestamp: '2020-8-19 9:30', type: 'success' },
-                  { content: '成功发送数据到原平台', timestamp: '2020-8-19 9:45', type: 'success' }
-                ]
-              },
-            ],
             allList: [],
             selectList: [],
             list: [],
@@ -142,26 +107,28 @@
             //对应的时间筛选框
             options: [ "今日", "三日内", "一周内", "一周外", "全部" ],
             value: '今日',
-
-            //对应详情查看的dialog
-            dialogTableVisible: false,
-            flag: [
-              { content: '', timestamp: '', type: '' },
-              { content: '', timestamp: '', type: '' },
-              { content: '', timestamp: '', type: '' },
-              { content: '', timestamp: '', type: '' },
-              { content: '', timestamp: '', type: '' }
-            ],
-            active: 0,
           }
         },
         created() {
-          this.allList = this.request;
+          this.get1();
           this.selectList = this.allList;
           this.selectChange();
-          this.initFlag();
         },
         methods: {
+          get1() {
+            let that = this;
+            this.$http({
+              method: 'get',
+              url: '/api/a/requestInfo/findAll',
+
+            })
+              .then(function (res) {
+                that.allList = res.data;
+                that.selectChange();
+              })
+              .catch(function (error) {
+              })
+          },
           getList() {
             this.pageTotal = this.selectList.length;
             this.list = this.selectList.slice(this.listQuery.pageSize*(this.listQuery.pageNum-1),this.listQuery.pageSize*this.listQuery.pageNum);
@@ -177,7 +144,7 @@
 
           //时间筛选（贼麻烦，可能需要优化）
           selectChange() {
-            let logindate;
+            let loginDate;
             let i = 0;
             let j = this.allList.length;
             this.selectList= [];
@@ -189,20 +156,21 @@
               for(i = 0; i < j; i++)
               {
                 let ars = [];
-                ars = this.allList[i].time.split('-');
-                let loginDate = new Date(ars[0], parseInt(ars[1] - 1), ars[2]);
+                let arsTest = [];
+                arsTest = this.allList[i].requestTime.split(' ');
+                ars = arsTest[0].split('-');
+                loginDate = new Date(ars[0], parseInt(ars[1] - 1), ars[2]);
                 if(loginDate.getTime() === start.getTime())
                 {
                   this.selectList.push({
-                    time: this.allList[i].time,
+                    uuId: this.allList[i].uuId,
+                    requestTime: this.allList[i].requestTime,
                     userName: this.allList[i].userName,
-                    originalPlatform: this.allList[i].originalPlatform,
-                    destinationPlatform: this.allList[i].destinationPlatform,
+                    srcPlatform: this.allList[i].srcPlatform,
+                    dstPlatform: this.allList[i].dstPlatform,
                     resourceType: this.allList[i].resourceType,
-                    dirName: this.allList[i].dirName,
-                    type: this.allList[i].type,
-                    status: this.allList[i].status,
-                    data: this.allList[i].data
+                    resourceName: this.allList[i].resourceName,
+                    requestStatus: this.allList[i].requestStatus,
                   });
                 }
               }
@@ -215,19 +183,20 @@
               end = new Date(date.getFullYear(), parseInt(date.getMonth()), date.getDate());
               for (i = 0; i < j; i++) {
                 let ars = [];
-                ars = this.allList[i].time.split('-');
-                logindate = new Date(ars[0], parseInt(ars[1] - 1), ars[2]);
-                if (start <= logindate && logindate < end) {
+                let arsTest = [];
+                arsTest = this.allList[i].requestTime.split(' ');
+                ars = arsTest[0].split('-');
+                loginDate = new Date(ars[0], parseInt(ars[1] - 1), ars[2]);
+                if (start <= loginDate && loginDate < end) {
                   this.selectList.push({
-                    time: this.allList[i].time,
+                    uuId: this.allList[i].uuId,
+                    requestTime: this.allList[i].requestTime,
                     userName: this.allList[i].userName,
-                    originalPlatform: this.allList[i].originalPlatform,
-                    destinationPlatform: this.allList[i].destinationPlatform,
+                    srcPlatform: this.allList[i].srcPlatform,
+                    dstPlatform: this.allList[i].dstPlatform,
                     resourceType: this.allList[i].resourceType,
-                    dirName: this.allList[i].dirName,
-                    type: this.allList[i].type,
-                    status: this.allList[i].status,
-                    data: this.allList[i].data
+                    resourceName: this.allList[i].resourceName,
+                    requestStatus: this.allList[i].requestStatus,
                   });
                 }
                 this.listQuery.pageNum = 1;
@@ -242,20 +211,21 @@
               for(i = 0; i < j; i++)
               {
                 let ars = [];
-                ars = this.allList[i].time.split('-');
-                logindate = new Date(ars[0], parseInt(ars[1] - 1), ars[2]);
-                if( start <= logindate && logindate < end)
+                let arsTest = [];
+                arsTest = this.allList[i].requestTime.split(' ');
+                ars = arsTest[0].split('-');
+                loginDate = new Date(ars[0], parseInt(ars[1] - 1), ars[2]);
+                if( start <= loginDate && loginDate < end)
                 {
                   this.selectList.push({
-                    time: this.allList[i].time,
+                    uuId: this.allList[i].uuId,
+                    requestTime: this.allList[i].requestTime,
                     userName: this.allList[i].userName,
-                    originalPlatform: this.allList[i].originalPlatform,
-                    destinationPlatform: this.allList[i].destinationPlatform,
+                    srcPlatform: this.allList[i].srcPlatform,
+                    dstPlatform: this.allList[i].dstPlatform,
                     resourceType: this.allList[i].resourceType,
-                    dirName: this.allList[i].dirName,
-                    type: this.allList[i].type,
-                    status: this.allList[i].status,
-                    data: this.allList[i].data
+                    resourceName: this.allList[i].resourceName,
+                    requestStatus: this.allList[i].requestStatus,
                   });
                 }
                 this.listQuery.pageNum = 1;
@@ -269,20 +239,21 @@
               for(i = 0; i < j; i++)
               {
                 let ars = [];
-                ars = this.allList[i].time.split('-');
-                logindate = new Date(ars[0], parseInt(ars[1] - 1), ars[2]);
-                if( logindate < end )
+                let arsTest = [];
+                arsTest = this.allList[i].requestTime.split(' ');
+                ars = arsTest[0].split('-');
+                loginDate = new Date(ars[0], parseInt(ars[1] - 1), ars[2]);
+                if( loginDate < end )
                 {
                   this.selectList.push({
-                    time: this.allList[i].time,
+                    uuId: this.allList[i].uuId,
+                    requestTime: this.allList[i].requestTime,
                     userName: this.allList[i].userName,
-                    originalPlatform: this.allList[i].originalPlatform,
-                    destinationPlatform: this.allList[i].destinationPlatform,
+                    srcPlatform: this.allList[i].srcPlatform,
+                    dstPlatform: this.allList[i].dstPlatform,
                     resourceType: this.allList[i].resourceType,
-                    dirName: this.allList[i].dirName,
-                    type: this.allList[i].type,
-                    status: this.allList[i].status,
-                    data: this.allList[i].data
+                    resourceName: this.allList[i].resourceName,
+                    requestStatus: this.allList[i].requestStatus,
                   });
                 }
                 this.listQuery.pageNum = 1;
@@ -297,24 +268,16 @@
           },
 
           //请求处理的详情查看
-          initFlag() {
-            for (let i = 0; i < 5; i++)
-            {
-              this.flag[i].content = '';
-              this.flag[i].timestamp = '';
-              this.flag[i].type = '';
+          handleRouter(index, row){
+            if (row.requestStatus === 0) {
+              this.$router.push({path:'/request/requestDetail/process',query: row});
             }
-          },
-          handleDetail(index, row){
-            this.dialogTableVisible = true;
-            this.initFlag();
-            for (let i = 0; i < row.data.length; i++)
-            {
-              this.flag[i].content = row.data[i].content;
-              this.flag[i].timestamp = row.data[i].timestamp;
-              this.flag[i].type = row.data[i].type;
+            if (row.requestStatus === 1) {
+              this.$router.push({path:'/request/requestDetail/success',query: row});
             }
-            this.active = row.data.length;
+            if (row.requestStatus === 2) {
+              this.$router.push({path:'/request/requestDetail/error',query: row});
+            }
           },
         }
     }

@@ -4,12 +4,10 @@
       <div>
         <i class="el-icon-search"></i>
         <span>筛选搜索</span>
-        <el-button style="float:right" type="primary" @click="" size="small">查询搜索</el-button>
-        <el-button style="float:right;margin-right: 15px" @click="reForm" size="small">重置</el-button>
       </div>
       <div style="margin-top: 15px">
-        <el-form :inline="true" :model="listQuery" size="small" label-width="140px">
-          <el-form-item label="I P搜索：">
+        <el-form :inline="true" :model="listQuery" label-width="140px">
+          <el-form-item label="IP搜索：">
             <el-input v-model="listQuery.orderIp" class="input-width" placeholder="平台IP地址"></el-input>
           </el-form-item>
           <el-form-item label="创建时间：">
@@ -18,38 +16,42 @@
           <el-form-item label="作者搜索：">
             <el-input v-model="listQuery.orderPerson" class="input-width" placeholder="作者姓名"></el-input>
           </el-form-item>
+          <el-form-item>
+            <el-button style="margin-left: 30px" type="primary" @click="">查询搜索</el-button>
+            <el-button style="margin-left: 15px" @click="reForm">重 置</el-button>
+          </el-form-item>
         </el-form>
       </div>
     </el-card>
     <el-card class="operate-container" shadow="never">
       <i class="el-icon-tickets"></i>
-      <span>数据列表</span>
+      <span>平台列表</span>
     </el-card>
     <div class="table-container">
       <el-table ref="orderTable" :data="list" style="width: 100%;" @selection-change="" border>
-        <el-table-column label="编号" width="80" align="center">
+        <el-table-column label="编号" width="120" align="center">
           <template slot-scope="scope">{{scope.$index+1}}</template>
         </el-table-column>
-        <el-table-column label="平台名称" width="180" align="center">
+        <el-table-column label="平台名称" width="240" align="center">
           <template slot-scope="scope">{{scope.row.platformName}}</template>
         </el-table-column>
-        <el-table-column label="平台IP" width="180" align="center">
+        <el-table-column label="平台IP" width="240" align="center">
           <template slot-scope="scope">{{scope.row.platformIp }}</template>
         </el-table-column>
-        <el-table-column label="系统类型" width="180" align="center">
+        <el-table-column label="系统类型" width="240" align="center">
           <template slot-scope="scope">{{scope.row.os}}</template>
         </el-table-column>
         <el-table-column label="创建时间" align="center">
           <template slot-scope="scope">{{scope.row.registerTime}}</template>
         </el-table-column>
-        <el-table-column label="操作" width="200" align="center">
+        <el-table-column label="操作" width="240" align="center">
           <template slot-scope="scope">
-            <el-button size="mini" @click="handleDetail(scope.$index, scope.row)" type="text">查看详情</el-button>
+            <el-button icon="el-icon-view" size="small" @click="handleDetail(scope.$index, scope.row)" type="success">查看详情</el-button>
           </template>
         </el-table-column>
       </el-table>
-
     </div>
+
     <div class="pagination-container">
       <el-pagination
         background
@@ -94,7 +96,7 @@
         let that = this;
         this.$http({
           method: 'get',
-          url: '/api/d/device/findAll'
+          url: '/api/a/device/findAll'
         })
         .then(function (res) {
           that.allList = res.data;               //第二个data是后端传递的数组名，可能需要修改

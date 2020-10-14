@@ -3,7 +3,7 @@
     <el-card class="operate-container" shadow="never">
       <i class="el-icon-tickets"></i>
       <span>角色列表</span>
-      <el-button type="danger" class="pull-right" @click="handleAdd">新增角色</el-button>
+      <el-button icon="el-icon-folder-add" type="primary" class="pull-right" @click="handleAdd">新增角色</el-button>
     </el-card>
     <div class="table-container">
       <el-table ref="orderTable" :data="list" style="width: 100%;" @selection-change="" border>
@@ -18,9 +18,9 @@
         </el-table-column>
         <el-table-column label="操作" width="300" align="center">
           <template slot-scope="scope">
-            <el-button size="small" @click="handleChange(scope.$index, scope.row)" type="text">编辑</el-button>
-            <el-button size="small" @click="permissionDetail(scope.$index, scope.row)" type="text">权限详情</el-button>
-            <el-button size="small" @click="handleDelete(scope.$index, scope.row)" type="text">删除</el-button>
+            <el-button size="small" icon="el-icon-view" @click="permissionDetail(scope.$index, scope.row)" type="success">权限</el-button>
+            <el-button size="small" icon="el-icon-edit" @click="handleChange(scope.$index, scope.row)" type="warning">编辑</el-button>
+            <el-button size="small" icon="el-icon-delete" @click="handleDelete(scope.$index, scope.row)" type="danger">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -189,10 +189,10 @@
           cancelButtonText: '取消',
           type: 'warning',
           center: true
-        }).then(() => {
+        }).then(async () => {
           let temp = this.roleAdd;
           console.log(temp);
-          this.$http({
+          await this.$http({
             method: 'post',
             url: '/api/b/role/insert',
             data: temp
@@ -208,11 +208,9 @@
             .catch(function (error) {
               console.log(error);
             })
-          that.sleep(500).then(() => {
-            that.get1();
-          })
+          that.get1();
+          that.addDialogFormVisible = false;
         });
-        that.addDialogFormVisible = false;
       },
 
       //编辑
@@ -235,8 +233,8 @@
           cancelButtonText: '取消',
           type: 'warning',
           center: true
-        }).then(() => {
-          this.$http({
+        }).then(async () => {
+          await this.$http({
             method: 'post',
             url: '/api/b/role/updateById?id='+this.roleChange.id+'&roleName='+this.roleChange.roleName+'&description='+this.roleChange.description,
           })
@@ -250,9 +248,7 @@
               console.log(error);
             })
           that.changeDialogFormVisible = false;
-          that.sleep(500).then(() => {
-            that.get1();
-          })
+          that.get1();
         })
       },
 
@@ -264,8 +260,8 @@
           cancelButtonText: '取消',
           type: 'warning',
           center: true
-        }).then(() => {
-          this.$http({
+        }).then(async () => {
+          await this.$http({
             method: 'post',
             url: '/api/b/role/deleteByRoleName?roleName='+row.roleName,
           })
@@ -278,9 +274,7 @@
             .catch(function (error) {
               console.log(error);
             })
-          that.sleep(500).then(() => {
-            that.get1();
-          })
+          that.get1();
         });
       },
 
@@ -292,8 +286,7 @@
         this.$http({
           method: 'get',
           url: '/api/b/rolePermission/findPermissionNameByRoleName?roleName='+row.roleName,
-        })
-          .then(function (res) {
+        }).then(function (res) {
             console.log(res);
             that.permissionDetailData = res.data;
             that.changeList();
@@ -303,9 +296,9 @@
           })
       },
       //权限分配
-      permissionDistribution() {
+      async permissionDistribution() {
         let that = this;
-        this.$http({
+        await this.$http({
           method: 'get',
           url: '/api/b/permission/getAllPermissionName',
         })
@@ -332,10 +325,10 @@
           cancelButtonText: '取消',
           type: 'warning',
           center: true
-        }).then(() => {
+        }).then(async () => {
           let temp = this.permissionDetailData;
           console.log(temp);
-          this.$http({
+          await this.$http({
             method: 'post',
             url: '/api/b/rolePermission/insertRoleNameAndPermissionNameList?roleName='+this.rolePermissionChangeName+'&permissionNameList='+this.permissionChangeData,
           })
@@ -348,12 +341,12 @@
             .catch(function (error) {
               console.log(error);
             })
+          that.innerVisible = false;
+          that.permissionDetailData = [];
+          for (let i = 0; i < that.permissionChangeData.length; i++) {
+            that.permissionDetailData[i] = that.permissionChangeData[i];
+          }
         })
-        that.innerVisible = false;
-        that.permissionDetailData = [];
-        for (let i = 0; i < that.permissionChangeData.length; i++) {
-          that.permissionDetailData[i] = that.permissionChangeData[i];
-        }
       },
       deleteDistribution() {
         this.innerVisible = false;
@@ -368,10 +361,6 @@
         this.isIndeterminate = checkedCount > 0 && checkedCount < this.permissions.length;
       },
 
-      //延迟时间
-      sleep (time) {
-        return new Promise((resolve) => setTimeout(resolve, time));
-      }
     }
   }
 </script>

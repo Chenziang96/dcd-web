@@ -3,7 +3,7 @@
     <el-card class="operate-container" shadow="never">
       <i class="el-icon-tickets"></i>
       <span>权限列表</span>
-      <el-button type="danger" class="pull-right" @click="handleAdd">新增权限</el-button>
+      <el-button icon="el-icon-folder-add" type="primary" class="pull-right" @click="handleAdd">新增权限</el-button>
     </el-card>
     <div class="table-container">
       <el-table ref="orderTable" :data="list" style="width: 100%;" @selection-change="" border>
@@ -18,8 +18,8 @@
         </el-table-column>
         <el-table-column label="操作" width="300" align="center">
           <template slot-scope="scope">
-            <el-button size="small" @click="handleChange(scope.$index, scope.row)" type="text">编辑</el-button>
-            <el-button size="small" @click="handleDelete(scope.$index, scope.row)" type="text">删除</el-button>
+            <el-button size="small" icon="el-icon-edit" @click="handleChange(scope.$index, scope.row)" type="warning">编辑</el-button>
+            <el-button size="small" icon="el-icon-delete" @click="handleDelete(scope.$index, scope.row)" type="danger">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -43,11 +43,11 @@
 
     <!--新增权限-->
     <el-dialog title="新增权限" :visible.sync="addDialogFormVisible" class="dialog-title" width="600px">
-      <el-form :model="permissionAdd" label-width="80px">
-        <el-form-item label="权限名称">
+      <el-form :model="permissionAdd" label-width="100px">
+        <el-form-item label="权限名称：">
           <el-input v-model="permissionAdd.permissionName"></el-input>
         </el-form-item>
-        <el-form-item label="权限描述">
+        <el-form-item label="权限描述：">
           <el-input v-model="permissionAdd.description"></el-input>
         </el-form-item>
       </el-form>
@@ -154,12 +154,11 @@
           cancelButtonText: '取消',
           type: 'warning',
           center: true
-        }).then(() => {
-          this.$http({
+        }).then(async () => {
+          await this.$http({
             method: 'post',
             url: '/api/b/permission/updateById?id='+this.permissionChange.id+'&permissionName='+this.permissionChange.permissionName+'&description='+this.permissionChange.description,
-          })
-            .then(function (res) {
+          }).then(function (res) {
               that.$message({
                 message: res.data.info,
                 type: res.data.status
@@ -169,9 +168,7 @@
               console.log(error);
             })
           that.changeDialogFormVisible = false;
-          that.sleep(500).then(() => {
-            that.get1();
-          })
+          that.get1();
         })
       },
 
@@ -191,15 +188,14 @@
           cancelButtonText: '取消',
           type: 'warning',
           center: true
-        }).then(() => {
+        }).then(async () => {
           let temp = this.permissionAdd;
           console.log(temp);
-          this.$http({
+          await this.$http({
             method: 'post',
             url: '/api/b/permission/insert',
             data: temp
-          })
-            .then(function (res) {
+          }).then(function (res) {
               that.$message({
                 message: res.data.info,
                 type: res.data.status
@@ -210,11 +206,9 @@
             .catch(function (error) {
               console.log(error);
             })
-          that.sleep(500).then(() => {
-            that.get1();
-          })
+          that.get1();
+          that.addDialogFormVisible = false;
         });
-        that.addDialogFormVisible = false;
       },
 
       //对应的删除权限功能
@@ -225,8 +219,8 @@
           cancelButtonText: '取消',
           type: 'warning',
           center: true
-        }).then(() => {
-          this.$http({
+        }).then(async () => {
+          await this.$http({
             method: 'post',
             url: '/api/b/permission/deleteByPermissionName?permissionName='+row.permissionName,
           })
@@ -239,16 +233,10 @@
             .catch(function (error) {
 
             })
-          that.sleep(500).then(() => {
-            that.get1();
-          })
+          that.get1();
         });
       },
 
-      //延迟时间
-      sleep (time) {
-        return new Promise((resolve) => setTimeout(resolve, time));
-      }
     }
   }
 </script>

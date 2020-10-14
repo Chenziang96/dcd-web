@@ -37,11 +37,14 @@
     },
     methods: {
       login(){
-        let temp = this.user;
+        let that = this;
+        let temp = that.user;
         // console.log(getters.token());
-        let storage = window.localStorage;
-        console.log('1',Cookies.get());
-        this.$http.post('log/login',temp)
+        this.$http({
+          method: 'post',
+          url: '/api/d/login',
+          data: temp,
+        })
           .then((res)=> {
             console.log(res);
             // storage.setItem('JESSIONID',)

@@ -3,7 +3,7 @@
     <el-card class="operate-container" shadow="never">
       <i class="el-icon-tickets"></i>
       <span>用户组列表</span>
-      <el-button type="danger" class="pull-right" @click="handleAdd">新增用户组</el-button>
+      <el-button icon="el-icon-folder-add" type="primary" class="pull-right" @click="handleAdd">新增用户组</el-button>
     </el-card>
     <div class="table-container">
       <el-table ref="orderTable" :data="list" style="width: 100%;" @selection-change="" border>
@@ -13,14 +13,17 @@
         <el-table-column label="用户组名称" width="300" align="center">
           <template slot-scope="scope">{{scope.row.groupName}}</template>
         </el-table-column>
+        <el-table-column label="对应角色" width="300" align="center">
+          <template slot-scope="scope">{{scope.row.roleName}}</template>
+        </el-table-column>
         <el-table-column label="用户组描述" align="center">
           <template slot-scope="scope">{{scope.row.description}}</template>
         </el-table-column>
-        <el-table-column label="操作" width="250" align="center">
+        <el-table-column label="操作" width="300" align="center">
           <template slot-scope="scope">
-            <el-button size="small" @click="handleChange(scope.$index, scope.row)" type="text">编辑</el-button>
-            <el-button size="small" @click="roleDetail(scope.$index, scope.row)" type="text">角色详情</el-button>
-            <el-button size="small" @click="handleDelete(scope.$index, scope.row)" type="text">删除</el-button>
+            <el-button icon="el-icon-view" size="small" @click="roleDetail(scope.$index, scope.row)" type="success">角色</el-button>
+            <el-button icon="el-icon-edit" size="small" @click="handleChange(scope.$index, scope.row)" type="warning">编辑</el-button>
+            <el-button icon="el-icon-delete" size="small" @click="handleDelete(scope.$index, scope.row)" type="danger">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -180,10 +183,10 @@
           cancelButtonText: '取消',
           type: 'warning',
           center: true
-        }).then(() => {
+        }).then(async () => {
           let temp = this.userGroupAdd;
           console.log(temp);
-          this.$http({
+          await this.$http({
             method: 'post',
             url: '/api/b/group/insert',
             data: temp
@@ -199,9 +202,7 @@
             .catch(function (error) {
               console.log(error);
             })
-          that.sleep(500).then(() => {
-            that.get1();
-          })
+          that.get1();
           that.addDialogFormVisible = false;
         });
       },
@@ -226,8 +227,8 @@
           cancelButtonText: '取消',
           type: 'warning',
           center: true
-        }).then(() => {
-          this.$http({
+        }).then(async () => {
+          await this.$http({
             method: 'post',
             url: '/api/b/group/updateById?id='+this.userGroupChange.id+'&groupName='+this.userGroupChange.groupName+'&description='+this.userGroupChange.description,
           })
@@ -240,9 +241,7 @@
             .catch(function (error) {
               console.log(error);
             })
-          that.sleep(500).then(() => {
-            that.get1();
-          })
+          that.get1();
           that.changeDialogFormVisible = false;
         })
       },
@@ -255,8 +254,8 @@
           cancelButtonText: '取消',
           type: 'warning',
           center: true
-        }).then(() => {
-          this.$http({
+        }).then(async () => {
+          await this.$http({
             method: 'post',
             url: '/api/b/group/deleteByGroupName?groupName='+row.groupName,
           })
@@ -269,9 +268,7 @@
             .catch(function (error) {
               console.log(error);
             })
-          that.sleep(500).then(() => {
-            that.get1();
-          })
+          that.get1();
         });
       },
 
@@ -281,29 +278,14 @@
         this.groupRoleChange.groupName = null;
       },
       getRoleName(index, row) {
-        let that = this;
-        that.initGroupRoleChange();
-        that.groupRoleChange.groupName = row.groupName;
-        this.$http({
-          method: 'get',
-          url: '/api/b/groupRole/findRoleNameByGroupName?groupName='+row.groupName
-        })
-          .then(function (res) {
-            console.log(res.data);
-            that.groupRoleData = res.data;
-            if(that.groupRoleData === "")
-            {
-              that.addOrChange = false;
-            }
-            else
-            {
-              that.addOrChange = true;
-              that.groupRoleChange.roleName = that.groupRoleData;
-            }
-          })
-          .catch(function (error) {
-            console.log(error);
-          })
+        this.initGroupRoleChange();
+        this.groupRoleChange.groupName = row.groupName;
+        if(row.roleName === null) {
+          this.addOrChange = false;
+        } else {
+          this.addOrChange = true;
+          this.groupRoleChange.roleName = row.roleName;
+        }
       },
       getRoleList() {
         let that = this;
@@ -333,8 +315,8 @@
             cancelButtonText: '取消',
             type: 'warning',
             center: true
-          }).then(() => {
-            this.$http({
+          }).then(async () => {
+            await this.$http({
               method: 'post',
               url: '/api/b/groupRole/insertGroupNameAndRoleName?groupName='+this.groupRoleChange.groupName+'&roleName='+this.groupRoleChange.roleName,
             })
@@ -344,6 +326,7 @@
               .catch(function (error) {
                 console.log(error);
               })
+            this.get1();
           })
         }
         else
@@ -354,8 +337,8 @@
             cancelButtonText: '取消',
             type: 'warning',
             center: true
-          }).then(() => {
-            this.$http({
+          }).then(async () => {
+            await this.$http({
               method: 'post',
               url: '/api/b/groupRole/updateByGroupName?groupName='+this.groupRoleChange.groupName+'&roleName='+this.groupRoleChange.roleName,
             })
@@ -368,6 +351,7 @@
               .catch(function (error) {
                 console.log(error);
               })
+            this.get1();
           })
         }
         this.roleDetailDialogVisible = false;
@@ -377,10 +361,6 @@
         this.addOrChange = null;
       },
 
-      //延迟时间
-      sleep (time) {
-        return new Promise((resolve) => setTimeout(resolve, time));
-      }
     }
   }
 </script>

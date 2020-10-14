@@ -3,36 +3,52 @@
     <el-page-header @back="goBack" :content="'目录详情(平台Ip：'+platform.platformIp + ')'">
     </el-page-header>
     <el-card class="operate-container" shadow="never">
-      <i class="el-icon-zoom-in"></i>
-      <el-select v-model="value" clearable placeholder="请选择" @change="selectChange()">
-        <el-option
-          v-for="item in options"
-          :key="item.index"
-          :label="item"
-          :value="item">
-        </el-option>
-      </el-select>
+      <div>
+        <i class="el-icon-search"></i>
+        <span>筛选搜索</span>
+      </div>
+      <div style="margin-top: 15px">
+        <el-form :inline="true">
+          <el-form-item label="资源类型选择：" label-width="120px" style="margin-left: 30px">
+            <el-select style="margin-left: 5px; width: 240px;"  v-model="value" clearable placeholder="请选择" @change="selectChange()">
+              <el-option
+                v-for="item in options"
+                :key="item.index"
+                :label="item"
+                :value="item">
+              </el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item>
+            <el-button style="margin-left: 30px" icon="el-icon-refresh" type="primary" @click="resetSelect">重 置</el-button>
+          </el-form-item>
+        </el-form>
+      </div>
+    </el-card>
+    <el-card class="operate-container" shadow="never">
+      <i class="el-icon-tickets"></i>
+      <span>目录列表</span>
     </el-card>
     <div class="table-container">
       <el-table ref="orderTable" :data="list" style="width: 100%;" @selection-change="" border>
-        <el-table-column label="编号" width="80" align="center">
+        <el-table-column label="编号" width="120" align="center">
           <template slot-scope="scope">{{scope.$index+1}}</template>
         </el-table-column>
-        <el-table-column label="目录名称" width="400" align="center">
+        <el-table-column label="目录名称" width="240" align="center">
           <template slot-scope="scope">{{scope.row.resourceName }}</template>
         </el-table-column>
-        <el-table-column label="资源类型" width="400" align="center">
+        <el-table-column label="资源类型" width="240" align="center">
           <template slot-scope="scope">{{scope.row.resourceType}}</template>
         </el-table-column>
-        <el-table-column label="创建时间" width="400" align="center">
+        <el-table-column label="创建时间" width="240" align="center">
           <template slot-scope="scope">{{scope.row.createTime}}</template>
         </el-table-column>
         <el-table-column label="安全等级" align="center">
           <template slot-scope="scope">{{scope.row.safetyLevel }}</template>
         </el-table-column>
-        <el-table-column label="操作" width="200" align="center">
+        <el-table-column label="操作" width="240" align="center">
           <template slot-scope="scope">
-            <el-button size="mini" @click="handleDetail(scope.$index, scope.row)" type="text">查看详情</el-button>
+            <el-button icon="el-icon-view" size="small" @click="handleDetail(scope.$index, scope.row)" type="success">查看详情</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -123,7 +139,7 @@
         let that = this;
         this.$http({
           method: 'get',
-          url: '/api/d/directory/findByPlatformIp?platformIp=' + this.platform.platformIp,
+          url: '/api/a/directory/findByPlatformIp?platformIp=' + this.platform.platformIp,
         })
           .then(function (res) {
             console.log(res);
@@ -147,12 +163,18 @@
         this.getList();
       },
 
+      //重置搜索
+      resetSelect() {
+        this.value = '';
+        this.selectChange();
+      },
+
       //资源类型选择框
       getResourceTypeList() {
         let that = this;
         this.$http({
           method: 'get',
-          url: '/api/d/directory/findAllResourceType'
+          url: '/api/a/directory/findAllResourceType'
         })
           .then(function (res) {
             console.log(res.data);
@@ -169,7 +191,7 @@
           let that = this;
           this.$http({
             method: 'get',
-            url: '/api/d/directory/findByPlatformIpAndResourceType?platformIp='+this.platform.platformIp+'&resourceType='+this.value,
+            url: '/api/a/directory/findByPlatformIpAndResourceType?platformIp='+this.platform.platformIp+'&resourceType='+this.value,
           })
             .then(function (res) {
               console.log(res);

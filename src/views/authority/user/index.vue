@@ -9,26 +9,34 @@
         <el-table-column label="编号" width="100" align="center">
           <template slot-scope="scope">{{scope.$index+1}}</template>
         </el-table-column>
-        <el-table-column label="用户名" width="265" align="center">
+        <el-table-column label="用户名" width="200" align="center">
           <template slot-scope="scope">{{scope.row.userName}}</template>
         </el-table-column>
-        <el-table-column label="用户密码" width="265" align="center">
+        <el-table-column label="所在用户组" width="200" align="center">
+          <template slot-scope="scope">{{scope.row.groupName}}</template>
+        </el-table-column>
+        <el-table-column label="用户密码" width="200" align="center">
           <template slot-scope="scope">{{scope.row.pwd}}</template>
         </el-table-column>
-        <el-table-column label="平台IP" width="265" align="center">
+        <el-table-column label="平台IP" width="230" align="center">
           <template slot-scope="scope">{{scope.row.platformIp }}</template>
         </el-table-column>
-        <el-table-column label="提交时间" width="265" align="center">
+        <el-table-column label="提交时间" width="230" align="center">
           <template slot-scope="scope">{{scope.row.registerTime}}</template>
         </el-table-column>
         <el-table-column label="在线状态" align="center">
-          <template slot-scope="scope">{{scope.row.onLine}}</template>
-        </el-table-column>
-        <el-table-column label="操作" width="265" align="center">
           <template slot-scope="scope">
-            <el-button size="mini" @click="handleGroup(scope.$index, scope.row)" type="text">分配用户组</el-button>
-            <el-button size="mini" @click="handlePermission(scope.$index, scope.row)" type="text">权限详情</el-button>
-            <el-button size="mini" @click="handleDelete(scope.$index, scope.row)" type="text">删除</el-button>
+            <i class="el-icon-error" v-show="scope.row.onLine === false"></i>
+            <i class="el-icon-success" v-show="scope.row.onLine === true"></i>
+            <el-tag v-show="scope.row.onLine === true" type="success">在线</el-tag>
+            <el-tag v-show="scope.row.onLine === false" type="info">离线</el-tag>
+          </template>
+        </el-table-column>
+        <el-table-column label="操作" width="320" align="center">
+          <template slot-scope="scope">
+            <el-button size="mini" icon="el-icon-thumb" @click="handleGroup(scope.$index, scope.row)" type="warning">用户组</el-button>
+            <el-button size="mini" icon="el-icon-view" @click="handlePermission(scope.$index, scope.row)" type="success">权限</el-button>
+            <el-button size="mini" icon="el-icon-delete" @click="handleDelete(scope.$index, scope.row)" type="danger">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -152,7 +160,6 @@
     methods:{
       get1(){
         let that = this;
-        let port = 9035;
         this.$http({
           method: 'get',
           url: '/api/a/user/list'
@@ -185,29 +192,14 @@
         this.userGroupChange.groupName = null;
       },
       getGroupName(index,row) {
-        let that = this;
-        that.initUserGroupChange();
-        that.userGroupChange.userName = row.userName;
-        this.$http({
-          method: 'get',
-          url: '/api/b/userGroup/findGroupNameByUserName?userName='+that.userGroupChange.userName
-        })
-          .then(function (res) {
-            console.log(res.data);
-            that.groupRoleData = res.data;
-            if(that.groupRoleData === "")
-            {
-              that.addOrChange = false;
-            }
-            else
-            {
-              that.addOrChange = true;
-              that.userGroupChange.groupName = that.groupRoleData;
-            }
-          })
-          .catch(function (error) {
-            console.log(error);
-          })
+        this.initUserGroupChange();
+        this.userGroupChange.userName = row.userName;
+        if(row.groupName === null) {
+          this.addOrChange = false;
+        } else {
+          this.addOrChange = true;
+          this.userGroupChange.groupName = row.groupName;
+        }
       },
       getGroupList() {
         let that = this;
@@ -240,8 +232,8 @@
             cancelButtonText: '取消',
             type: 'warning',
             center: true
-          }).then(() => {
-            this.$http({
+          }).then(async () => {
+            await this.$http({
               method: 'post',
               url: '/api/b/userGroup/insertUserNameAndGroupName?userName='+this.userGroupChange.userName+'&groupName='+this.userGroupChange.groupName,
             })
@@ -254,6 +246,7 @@
               .catch(function (error) {
                 console.log(error);
               })
+            that.get1();
             that.groupSelectVisible = false;
           })
         }
@@ -265,12 +258,11 @@
             cancelButtonText: '取消',
             type: 'warning',
             center: true
-          }).then(() => {
-            this.$http({
+          }).then(async () => {
+            await this.$http({
               method: 'post',
               url: '/api/b/userGroup/updateUserNameAndGroupName?userName='+this.userGroupChange.userName+'&groupName='+this.userGroupChange.groupName,
-            })
-              .then(function (res) {
+            }).then(function (res) {
                 that.$message({
                   message: res.data.info,
                   type: res.data.status
@@ -279,6 +271,7 @@
               .catch(function (error) {
                 console.log(error);
               })
+            that.get1();
             that.groupSelectVisible = false;
           })
         }
@@ -303,9 +296,9 @@
           })
       },
       //处理 权限分配功能
-      permissionDistribution() {
+      async permissionDistribution() {
         let that = this;
-        this.$http({
+        await this.$http({
           method: 'get',
           url: '/api/b/userPermission/getAllPermissionByUserName?userName=' + this.userPermissionChangeName,
         })
@@ -332,10 +325,10 @@
           cancelButtonText: '取消',
           type: 'warning',
           center: true
-        }).then(() => {
+        }).then(async () => {
           let temp = this.permissionDetailData;
           console.log(temp);
-          this.$http({
+          await this.$http({
             method: 'post',
             url: '/api/b/userPermission/insertUserNameAndPermissionNameList?userName='+this.userPermissionChangeName+'&permissionNameList='+this.permissionChangeData,
           })
@@ -348,12 +341,12 @@
             .catch(function (error) {
               console.log(error);
             })
+          that.innerVisible = false;
+          that.permissionDetailData = [];
+          for (let i = 0; i < that.permissionChangeData.length; i++) {
+            that.permissionDetailData[i] = that.permissionChangeData[i];
+          }
         })
-        that.innerVisible = false;
-        that.permissionDetailData = [];
-        for (let i = 0; i < that.permissionChangeData.length; i++) {
-          that.permissionDetailData[i] = that.permissionChangeData[i];
-        }
       },
       deleteDistribution() {
         this.innerVisible = false;
@@ -376,8 +369,8 @@
           cancelButtonText: '取消',
           type: 'warning',
           center: true
-        }).then(() => {
-          this.$http({
+        }).then(async () => {
+          await this.$http({
             method: 'post',
             url: '/api/c/delete?userName='+row.userName,
           })
@@ -390,16 +383,10 @@
             .catch(function (error) {
               console.log(error);
             })
-          that.sleep(500).then(() => {
-            that.get1();
-          })
+          that.get1();
         });
       },
 
-      //延迟时间
-      sleep (time) {
-        return new Promise((resolve) => setTimeout(resolve, time));
-      }
     }
   }
 </script>
