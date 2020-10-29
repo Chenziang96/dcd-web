@@ -11,12 +11,15 @@
         </router-link>
 
         <el-submenu v-else :index="item.name||item.path" :key="item.name">
-          <div @click="getStore(item.meta.title)">
+<!--          <div @click="getStore(item.meta.title)">-->
             <template slot="title" >
-              <svg-icon v-if="item.meta&&item.meta.icon" :icon-class="item.meta.icon"></svg-icon>
-              <span v-if="item.meta&&item.meta.title" slot="title">{{item.meta.title}}</span>
+              <div @click="getStore(item.meta.title)">
+                <svg-icon v-if="item.meta&&item.meta.icon" :icon-class="item.meta.icon"></svg-icon>
+                <span v-if="item.meta&&item.meta.title" slot="title">{{item.meta.title}}</span>
+              </div>
+
             </template>
-          </div>
+<!--          </div>-->
 
 
           <template v-for="child in item.children" v-if="!child.hidden">

@@ -115,19 +115,19 @@
       },
 
       async changeData1() {
-        let that = this;
-        await this.$http({
-          method: 'get',
-          url: '/api/a/navigation'
-        })
-          .then(function (res) {
-            that.s = res.data;
-            console.log("执行乐乐乐乐乐");
-          })
-          .catch(function (error) {
-            console.log(error);
-          })
-        this.$store.state.navigation = that.s;
+        // let that = this;
+        // await this.$http({
+        //   method: 'get',
+        //   url: '/api/a/navigation'
+        // })
+        //   .then(function (res) {
+        //     that.s = res.data;
+        //     console.log("执行乐乐乐乐乐");
+        //   })
+        //   .catch(function (error) {
+        //     console.log(error);
+        //   })
+        // this.$store.state.navigation = that.s;
         await this.$router.push('/home');
       },
 

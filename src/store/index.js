@@ -8,7 +8,7 @@ Vue.use(Vuex)
 
 const store = new Vuex.Store({
   state: {
-    navigation: [],
+    navigation: [true, true, true, true, true],
     directory: [],
     transmission: [],
     permissionManage: [],
