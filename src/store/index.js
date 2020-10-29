@@ -7,11 +7,27 @@ import getters from './getters'
 Vue.use(Vuex)
 
 const store = new Vuex.Store({
+  state: {
+    navigation: [],
+    directory: [],
+    transmission: [],
+    permissionManage: [],
+    permissions: [],
+    roles: [],
+    users: [],
+    userGroups: [],
+    ruler: [],
+    audit: [],
+    systemLog: [],
+    operationLog: []
+  },
   modules: {
     app,
     user
   },
-  getters
+  getters,
 })
+
+
 
 export default store

@@ -15,21 +15,12 @@ Vue.use(Router);
 export default new Router({
   routes: [
     {
-      path: '',
-      redirect: '/login'
-    },
-    {
-      path: '/login',
-      name: 'login',
-      component: Login
-    },
-    {
       path: '/home',
       component: layout,
-      redirect: '/home',
+      redirect: '/home/hello',
       children: [{
-        path: '',
-        name: '',
+        path: 'hello',
+        name: 'hello',
         component: () => import('@/views/home/index'),
         meta: {title: '首页', icon: 'home'}
       }]
@@ -39,13 +30,13 @@ export default new Router({
       component: layout,
       redirect: '/directory/platform',
       name: 'directory',
-      meta: {title: '目录管理', icon: 'arrange'},
+      meta: {title: '平台/目录信息', icon: 'arrange'},
       children: [
         {
           path: 'platform',
           name: 'platform',
           component: Platform,
-          meta: {title: '平台信息', icon: 'platform'}
+          meta: {title: '平台/目录信息', icon: 'platform'}
         },
         {
           path: 'dirDetail',
@@ -61,7 +52,7 @@ export default new Router({
       component: layout,
       redirect: '/request/current',
       name: 'request',
-      meta: {title: '数据传输', icon: 'send'},
+      meta: {title: '请求详情', icon: 'send'},
       children: [
         {
           path: 'current',
@@ -90,32 +81,20 @@ export default new Router({
           meta: {title: '请求状态详情'},
           hidden: true
         },
-        {
-          path: 'past',
-          name: 'past',
-          component: Past,
-          meta: {title: '历史记录', icon: 'request_past'}
-        },
       ]
     },
     {
       path: '/authority',
       component: layout,
-      redirect: '/authority/userGroup',
+      redirect: '/authority/permission',
       name: 'authority',
       meta: {title: '权限管理', icon: 'authority'},
       children: [
         {
-          path: 'userGroup',
-          name: 'userGroup',
-          component: () => import('@/views/authority/userGroup/index'),
-          meta: {title: '用户组列表', icon: 'userGroup'},
-        },
-        {
-          path: 'user',
-          name: 'user',
-          component: () => import('@/views/authority/user/index'),
-          meta: {title: '用户列表', icon: 'user'},
+          path: 'permission',
+          name: 'permission',
+          component: () => import('@/views/authority/permission/index'),
+          meta: {title: '权限列表', icon: 'permission'},
         },
         {
           path: 'role',
@@ -124,23 +103,29 @@ export default new Router({
           meta: {title: '角色列表', icon: 'role'},
         },
         {
-          path: 'permission',
-          name: 'permission',
-          component: () => import('@/views/authority/permission/index'),
-          meta: {title: '权限列表', icon: 'permission'},
+          path: 'user',
+          name: 'user',
+          component: () => import('@/views/authority/user/index'),
+          meta: {title: '用户列表', icon: 'user'},
+        },
+        {
+          path: 'userGroup',
+          name: 'userGroup',
+          component: () => import('@/views/authority/userGroup/index'),
+          meta: {title: '用户组列表', icon: 'userGroup'},
         },
       ]
     },
     {
-      path: '',
+      path: '/rules',
       component: layout,
-      redirect: '/rules',
+      redirect: '/rules/configuration',
       name: 'rules',
       meta: {title: '规则配置', icon: 'rules'},
       children: [
         {
-          path: 'rules',
-          name: 'rules',
+          path: 'configuration',
+          name: 'configuration',
           component: ()=> import('@/views/rules/index'),
           meta: {title: '规则配置', icon: 'rules'},
         },
@@ -166,6 +151,15 @@ export default new Router({
           meta: {title: '操作日志', icon: 'IoT_register'},
         },
       ]
-    }
+    },
+    {
+      path: '',
+      redirect: '/login'
+    },
+    {
+      path: '/login',
+      name: 'login',
+      component: Login
+    },
   ]
 })

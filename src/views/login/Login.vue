@@ -1,21 +1,41 @@
 <template>
   <div class="background">
-    <div class="login">
-      <h1 class="h1">Login</h1>
-      <div>
-        <label>
-          <input type="text" placeholder="Username" v-model="user.userName" class="usn">
-        </label>
+    <div :class="className">
+      <div id="signIn">
+        <h1 class="h1" style="padding-top: 50px">Login</h1>
+        <div style="padding-left: 120px;padding-right: 120px;margin-top: 70px" >
+          <label>
+            <input style="margin: 40px auto;" type="text" placeholder="Username" v-model="user.userName" class="usn">
+          </label>
+          <label>
+            <input style="margin: 40px auto;" type="password" placeholder="Password" v-model="user.pwd" class="psd">
+          </label>
+        </div>
+        <div>
+          <button class="btn" @click="login()">Sign in</button>
+        </div>
+        <span id="toRegister" @click="toSignUp" style="margin-top: 60px" class="toSign">to Sign up</span>
       </div>
-      <div>
-        <label>
-          <input type="password" placeholder="Password" v-model="user.pwd" class="psd">
-        </label>
+      <div id="signUp">
+        <h1 class="h1" style="padding-top: 50px">Register</h1>
+        <div style="padding-left: 120px;padding-right: 120px;" >
+          <label>
+            <input style="margin: 20px auto;" type="text" placeholder="Username" v-model="userRegister.userName" class="usn">
+          </label>
+          <label>
+            <input style="margin: 20px auto;" type="password" placeholder="Password" v-model="userRegister.pwd" class="psd">
+          </label>
+          <label>
+            <input style="margin: 20px auto;" type="text" placeholder="PlatformIp" v-model="userRegister.platformIp" class="usn">
+          </label>
+        </div>
+        <button class="btn" @click="register()">Sign up</button>
+        <span id="toLogin" @click="toSignIn" style="padding-top: 35px;" class="toSign">to Sign in</span>
       </div>
-      <button class="btn" @click="login()">sign in</button>
+
+    </div>
 <!--      <el-alert v-if="false" title="用户名和密码正确，登录成功！" type="success"></el-alert>-->
 <!--      <el-alert v-else-if="true" title="用户名或密码错误，登录失败！" type="error"></el-alert>-->
-    </div>
   </div>
 </template>
 <script>
@@ -32,28 +52,113 @@
           platformIp:'',
           registerTime:'',
           isOnline:'',
-        }
+        },
+        userRegister: {
+          userName: '',
+          pwd: '',
+          platformIp: ''
+        },
+        s: [],
+        className: 'login'
       }
     },
     methods: {
-      login(){
+      async login2(){
+        let that = this;
+        // console.log(getters.token());
+        await this.$http({
+          method: 'get',
+          url: '/api/d/doLogin?userName='+that.user.userName+'&pwd='+that.user.pwd,
+        })
+          .then((res)=> {
+            console.log(res);
+            // storage.setItem('JESSIONID',)
+            console.log(res.data);
+            if (res.data === "登录成功！") {
+              that.changeData1();
+            } else {
+              this.$message({
+                message: res.data,
+                type: "error"
+              });
+            }
+          })
+          .catch(function (error) {
+            console.log(error);
+          })
+      },
+      //登录
+      async login(){
         let that = this;
         let temp = that.user;
         // console.log(getters.token());
-        this.$http({
+        await this.$http({
           method: 'post',
           url: '/api/d/login',
           data: temp,
         })
           .then((res)=> {
             console.log(res);
+            if (res.data.result === "登录成功!") {
+              that.changeData1();
+            } else {
+              this.$message({
+                message: res.data,
+                type: "error"
+              });
+            }
             // storage.setItem('JESSIONID',)
-            this.$router.push('/home');
           })
           .catch(function (error) {
             console.log(error);
           })
       },
+
+      async changeData1() {
+        let that = this;
+        await this.$http({
+          method: 'get',
+          url: '/api/a/navigation'
+        })
+          .then(function (res) {
+            that.s = res.data;
+            console.log("执行乐乐乐乐乐");
+          })
+          .catch(function (error) {
+            console.log(error);
+          })
+        this.$store.state.navigation = that.s;
+        await this.$router.push('/home');
+      },
+
+      //注册
+      register() {
+        let that = this;
+        this.$http({
+          method: 'post',
+          url: '/api/d/insert?userName='+that.userRegister.userName+'&pwd='+that.userRegister.pwd+'&platformIp='+that.userRegister.platformIp,
+        })
+          .then((res)=> {
+            console.log(res);
+            // storage.setItem('JESSIONID',)
+          })
+          .catch(function (error) {
+            console.log(error);
+          })
+      },
+
+      toSignUp() {
+        this.className = 'register';
+        this.userRegister.userName = null;
+        this.userRegister.pwd = null;
+        this.userRegister.platformIp = null;
+      },
+
+      toSignIn() {
+        this.className = 'login';
+        this.user.userName = null;
+        this.user.pwd = null;
+      }
     }
   }
 </script>
@@ -68,12 +173,22 @@
   }
 
   .login {
-    width: 20%;
-    height: 40%;
+    width: 30%;
+    height: 62%;
     margin: 10% auto auto;
     text-align: center;
     background-color: #00000090;
-    padding: 100px;
+    /*padding: 100px;*/
+    border-radius: 30px;
+  }
+
+  .register {
+    width: 30%;
+    height: 62%;
+    margin: 10% auto auto;
+    text-align: center;
+    background-color: #00000090;
+    /*padding: 100px;*/
     border-radius: 30px;
   }
 
@@ -87,7 +202,6 @@
 
   .usn {
     display: block;
-    margin: 15px auto;
     text-align: center;
     border: 2px solid #FFFFFF;
     padding: 12px;
@@ -107,10 +221,9 @@
 
   .psd {
     display: block;
-    margin: 20px auto;
     text-align: center;
     border: 2px solid #FFFFFF;
-    padding: 14px;
+    padding: 12px;
     width: 200px;
     outline: none;
     color: #FFFFFF;
@@ -135,13 +248,33 @@
     text-align: center;
     margin: 20px auto;
     padding: 8px 25px;
-    font-size: 25px;
+    font-size: 18px;
     color: black;
     transition: 0.25s;
   }
 
+  .toSign {
+    font-size: 25px;
+    float: right;
+    padding-right: 40px;
+    color: #ffe2db;
+  }
+
+  .toSign:hover {
+    color: rgb(255, 154, 254);
+    cursor: pointer;
+  }
+
   .btn:hover {
-    font-size: 35px;
+    cursor: pointer;
     background-image: linear-gradient(to right, #b8cbb8 0%, #b8cbb8 0%, #b465da 0%, #cf6cc9 33%, #ee689c 66%, #ee689c 100%);
+  }
+
+  .login #signUp {
+    display: none;
+  }
+
+  .register #signIn {
+    display: none;
   }
 </style>

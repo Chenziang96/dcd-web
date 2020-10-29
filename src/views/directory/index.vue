@@ -17,7 +17,7 @@
             <el-input v-model="listQuery.orderPerson" class="input-width" placeholder="作者姓名"></el-input>
           </el-form-item>
           <el-form-item>
-            <el-button style="margin-left: 30px" type="primary" @click="">查询搜索</el-button>
+            <el-button style="margin-left: 30px" type="primary" @click="test">查询搜索</el-button>
             <el-button style="margin-left: 15px" @click="reForm">重 置</el-button>
           </el-form-item>
         </el-form>
@@ -88,7 +88,7 @@
         list: [],
       }
     },
-    mounted() {
+    created() {
       this.get1();   //联调时打开
     },
     methods:{
@@ -126,7 +126,21 @@
         this.listQuery.createTime='';
         this.listQuery.orderIp='';
         this.listQuery.orderPerson='';
+      },
+
+      test() {
+        this.$http({
+          method: 'get',
+          url: '/api/d/checkPerms'
+        }).then((res)=> {
+          console.log(res);
+          // storage.setItem('JESSIONID',)
+        })
+          .catch(function (error) {
+            console.log(error);
+          })
       }
+
     }
   }
 </script>

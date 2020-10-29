@@ -1,14 +1,20 @@
+<!--控制导航栏上面的信息和右上角的按钮-->
 <template>
   <el-menu class="navbar" mode="horizontal">
     <hamburger class="hamburger-container" :toggleClick="toggleSideBar" :isActive="sidebar.opened"></hamburger>
+    <!--首页/审计管理/系统日志-->
     <breadcrumb></breadcrumb>
+    <!--右上角的操作-->
     <el-dropdown class="avatar-container" trigger="click">
       <div class="avatar-wrapper">
+        <!--图片-->
         <img class="user-avatar" :src="Avatar_point">
+        <!--下拉-->
         <i class="el-icon-caret-bottom"></i>
       </div>
+      <!--下拉后的菜单-->
       <el-dropdown-menu class="user-dropdown" slot="dropdown">
-        <router-link class="inlineBlock" to="/">
+        <router-link class="inlineBlock" to="/home/hello">
           <el-dropdown-item>
             首页
           </el-dropdown-item>
@@ -23,6 +29,7 @@
 
 <script>
 import { mapGetters } from 'vuex'
+//首页/审计管理/系统日志
 import Breadcrumb from '@/components/Breadcrumb'
 import Hamburger from '@/components/Hamburger'
 
@@ -48,14 +55,15 @@ export default {
       this.$store.dispatch('ToggleSideBar')
     },
     logout() {
-      this.$store.dispatch('LogOut').then(() => {
+      // this.$store.dispatch('LogOut').then(() => {
         this.$http({
           method: 'post',
           url: '/api/d/logOff'
         });
         location.reload() // 为了重新实例化vue-router对象 避免bug
-      })
-    }
+      // })
+    },
+
   }
 }
 </script>

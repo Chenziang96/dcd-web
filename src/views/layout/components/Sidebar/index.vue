@@ -9,7 +9,7 @@
       text-color="#bfcbd9"
       active-text-color="#409EFF"
     >
-      <sidebar-item :routes="routes"></sidebar-item>
+      <sidebar-item :routes="routes" :data="data"></sidebar-item>
     </el-menu>
   </scroll-bar>
 </template>
@@ -25,8 +25,15 @@ export default {
     ...mapGetters([
       'sidebar'
     ]),
+
+    data() {
+      console.log(this.$store.state.navigation);
+      console.log("zzzzz");
+      return this.$store.state.navigation;
+    },
     routes() {
-      return this.$router.options.routes
+      console.log("执行");
+      return this.$router.options.routes;
     },
     isCollapse() {
       return !this.sidebar.opened
