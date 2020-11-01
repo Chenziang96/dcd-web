@@ -32,10 +32,7 @@
         <button class="btn" @click="register()">Sign up</button>
         <span id="toLogin" @click="toSignIn" style="padding-top: 35px;" class="toSign">to Sign in</span>
       </div>
-
     </div>
-<!--      <el-alert v-if="false" title="用户名和密码正确，登录成功！" type="success"></el-alert>-->
-<!--      <el-alert v-else-if="true" title="用户名或密码错误，登录失败！" type="error"></el-alert>-->
   </div>
 </template>
 <script>
@@ -115,19 +112,19 @@
       },
 
       async changeData1() {
-        // let that = this;
-        // await this.$http({
-        //   method: 'get',
-        //   url: '/api/a/navigation'
-        // })
-        //   .then(function (res) {
-        //     that.s = res.data;
-        //     console.log("执行乐乐乐乐乐");
-        //   })
-        //   .catch(function (error) {
-        //     console.log(error);
-        //   })
-        // this.$store.state.navigation = that.s;
+        let that = this;
+        await this.$http({
+          method: 'get',
+          url: '/api/d/checkPermsMatch?parentId=0'
+        })
+          .then(function (res) {
+            that.s = res.data;
+            console.log("执行乐乐乐乐乐");
+          })
+          .catch(function (error) {
+            console.log(error);
+          })
+        this.$store.state.navigation = that.s;
         await this.$router.push('/home');
       },
 

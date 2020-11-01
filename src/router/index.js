@@ -52,13 +52,13 @@ export default new Router({
       component: layout,
       redirect: '/request/current',
       name: 'request',
-      meta: {title: '请求详情', icon: 'send'},
+      meta: {title: '数据传输', icon: 'send'},
       children: [
         {
           path: 'current',
           name: 'current',
           component: Current,
-          meta: {title: '请求详情', icon: 'request_detail'}
+          meta: {title: '数据传输', icon: 'request_detail'}
         },
         {
           path: 'requestDetail/success',

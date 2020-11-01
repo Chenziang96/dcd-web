@@ -34,9 +34,9 @@
         </el-table-column>
         <el-table-column label="操作" width="320" align="center">
           <template slot-scope="scope">
-            <el-button size="mini" icon="el-icon-thumb" @click="handleGroup(scope.$index, scope.row)" type="warning">用户组</el-button>
-            <el-button size="mini" icon="el-icon-view" @click="handlePermission(scope.$index, scope.row)" type="success">权限</el-button>
-            <el-button size="mini" icon="el-icon-delete" @click="handleDelete(scope.$index, scope.row)" type="danger">删除</el-button>
+            <el-button :disabled="!btnPermission[0]" size="mini" icon="el-icon-thumb" @click="handleGroup(scope.$index, scope.row)" type="warning">用户组</el-button>
+            <el-button :disabled="!btnPermission[1]" size="mini" icon="el-icon-view" @click="handlePermission(scope.$index, scope.row)" type="success">权限</el-button>
+            <el-button :disabled="!btnPermission[2]" size="mini" icon="el-icon-delete" @click="handleDelete(scope.$index, scope.row)" type="danger">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -133,6 +133,9 @@
         allList: [],          //截取的当前要展示的目录信息数组
         list: [],
 
+        //获取按钮权限
+        btnPermission: [],
+
         //对应的分配用户组的功能
         groupSelectVisible: false,
         groupOptions: [],
@@ -158,8 +161,19 @@
       this.get1();
     },
     methods:{
-      get1(){
+      async get1(){
         let that = this;
+        await this.$http({
+          method: 'get',
+          url: '/api/d/checkPermsMatch?parentId=8'
+        })
+          .then(function (res) {
+            that.btnPermission = res.data;
+            console.log("执行乐乐乐乐乐");
+          })
+          .catch(function (error) {
+            console.log(error);
+          })
         this.$http({
           method: 'get',
           url: '/api/a/user/list'

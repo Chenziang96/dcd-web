@@ -8,18 +8,9 @@ Vue.use(Vuex)
 
 const store = new Vuex.Store({
   state: {
-    navigation: [true, true, true, true, true],
-    directory: [],
-    transmission: [],
+    navigation: [],
     permissionManage: [],
-    permissions: [],
-    roles: [],
-    users: [],
-    userGroups: [],
-    ruler: [],
-    audit: [],
-    systemLog: [],
-    operationLog: []
+    audit: []
   },
   modules: {
     app,

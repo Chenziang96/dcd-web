@@ -56,11 +56,12 @@ export default {
     },
     logout() {
       // this.$store.dispatch('LogOut').then(() => {
-        this.$http({
-          method: 'post',
-          url: '/api/d/logOff'
-        });
-        location.reload() // 为了重新实例化vue-router对象 避免bug
+      this.$http({
+        method: 'post',
+        url: '/api/d/logOff'
+      });
+      this.$router.push('/login');
+      location.reload() // 为了重新实例化vue-router对象 避免bug
       // })
     },
 

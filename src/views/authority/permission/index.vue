@@ -3,7 +3,7 @@
     <el-card class="operate-container" shadow="never">
       <i class="el-icon-tickets"></i>
       <span>权限列表</span>
-      <el-button icon="el-icon-folder-add" type="primary" class="pull-right" @click="handleAdd">新增权限</el-button>
+      <el-button :disabled="!btnPermission[0]" icon="el-icon-folder-add" type="primary" class="pull-right" @click="handleAdd">新增权限</el-button>
     </el-card>
     <div class="table-container">
       <el-table ref="orderTable" :data="list" style="width: 100%;" @selection-change="" border>
@@ -18,8 +18,8 @@
         </el-table-column>
         <el-table-column label="操作" width="300" align="center">
           <template slot-scope="scope">
-            <el-button size="small" icon="el-icon-edit" @click="handleChange(scope.$index, scope.row)" type="warning">编辑</el-button>
-            <el-button size="small" icon="el-icon-delete" @click="handleDelete(scope.$index, scope.row)" type="danger">删除</el-button>
+            <el-button :disabled="!btnPermission[1]" size="small" icon="el-icon-edit" @click="handleChange(scope.$index, scope.row)" type="warning">编辑</el-button>
+            <el-button :disabled="!btnPermission[2]" size="small" icon="el-icon-delete" @click="handleDelete(scope.$index, scope.row)" type="danger">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -93,6 +93,9 @@
         allList: [],          //截取的当前要展示的目录信息数组
         list: [],
 
+        //获取按钮权限
+        btnPermission: [],
+
         //对应的编辑权限功能
         permissionChange: { id: null, permissionName: null, description: null },
         changeDialogFormVisible: false,
@@ -104,10 +107,22 @@
     },
     created() {
       this.get1();
+      this.aaa = this.$store.state.permissions;
     },
     methods:{
-      get1(){
+      async get1(){
         let that = this;
+        await this.$http({
+          method: 'get',
+          url: '/api/d/checkPermsMatch?parentId=6'
+        })
+          .then(function (res) {
+            that.btnPermission = res.data;
+            console.log("执行乐乐乐乐乐");
+          })
+          .catch(function (error) {
+            console.log(error);
+          })
         this.$http({
           method: 'get',
           url: '/api/b/permission/findAll'

@@ -11,29 +11,28 @@ module.exports = {
     assetsPublicPath: '/',
     proxyTable: {
       '/api/a': {
-        target: 'http://121.248.55.52:9035',   //设置你调用的接口域名和端口号 别忘了加http
-        // target: 'http://121.248.50.114:9035',   //设置你调用的接口域名和端口号 别忘了加http
+        target: 'http://localhost:9035',   //设置你调用的接口域名和端口号 别忘了加http
         changeOrigin: true,       //這裡true表示实现跨域
         pathRewrite: {
           '^/api/a': '/'    //这里理解成用‘/api’代替target里面的地址，后面组件中我们掉接口时直接用api代替 比如我要调用'http://40.00.100.100:3002/user/add'，直接写‘/api/user/add’即可
         }
       },
       '/api/b': {
-        target: 'http://121.248.55.52:9036',   //设置你调用的接口域名和端口号 别忘了加http
+        target: 'http://localhost:9036',   //设置你调用的接口域名和端口号 别忘了加http
         changeOrigin: true,       //這裡true表示实现跨域
         pathRewrite: {
           '^/api/b': '/'    //这里理解成用‘/api’代替target里面的地址，后面组件中我们掉接口时直接用api代替 比如我要调用'http://40.00.100.100:3002/user/add'，直接写‘/api/user/add’即可
         }
       },
       '/api/c': {
-        target: 'http://121.248.55.52:9044',   //设置你调用的接口域名和端口号 别忘了加http
+        target: 'http://localhost:9044',   //设置你调用的接口域名和端口号 别忘了加http
         changeOrigin: true,       //這裡true表示实现跨域
         pathRewrite: {
           '^/api/c': '/'    //这里理解成用‘/api’代替target里面的地址，后面组件中我们掉接口时直接用api代替 比如我要调用'http://40.00.100.100:3002/user/add'，直接写‘/api/user/add’即可
         }
       },
       '/api/d': {
-        target: 'http://121.248.55.52:9032',   //设置你调用的接口域名和端口号 别忘了加http
+        target: 'http://localhost:9032',   //设置你调用的接口域名和端口号 别忘了加http
         changeOrigin: true,       //這裡true表示实现跨域
         pathRewrite: {
           '^/api/d': '/'    //这里理解成用‘/api’代替target里面的地址，后面组件中我们掉接口时直接用api代替 比如我要调用'http://40.00.100.100:3002/user/add'，直接写‘/api/user/add’即可

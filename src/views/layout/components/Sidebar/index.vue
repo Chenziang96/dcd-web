@@ -29,7 +29,7 @@ export default {
     data() {
       console.log(this.$store.state.navigation);
       console.log("zzzzz");
-      return this.$store.state.navigation;
+      return this.$store.state;
     },
     routes() {
       console.log("执行");

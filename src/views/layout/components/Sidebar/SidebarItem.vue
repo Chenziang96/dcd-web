@@ -1,7 +1,7 @@
 <template>
   <div class="menu-wrapper">
     <template v-for="(item, xx) in routes" v-if="!item.hidden && item.children">
-      <div :key="xx" v-if="xx===0 || xx >= 6 || data[xx - 1]">
+      <div :key="xx" v-if="xx===0 || xx >= 6 || data.navigation[xx - 1]">
         <router-link v-if="hasOneShowingChildren(item.children) && !item.children[0].children && !item.alwaysShow" :to="item.path+'/'+item.children[0].path"
                      :key="item.children[0].name">
           <el-menu-item @click="getStore(item.children[0].meta.title)" :index="item.path+'/'+item.children[0].path" :class="{'submenu-title-noDropdown':!isNest}">
@@ -22,15 +22,18 @@
 <!--          </div>-->
 
 
-          <template v-for="child in item.children" v-if="!child.hidden">
-            <sidebar-item :is-nest="true" class="nest-menu" v-if="child.children&&child.children.length>0" :routes="[child]" :key="child.path"></sidebar-item>
+          <template v-for="(child, yy) in item.children" v-if="!child.hidden">
+            <div :key="yy" v-if="(xx===3 && data.permissionManage[yy]) || (xx===5 && data.audit[yy])">
+              <sidebar-item :is-nest="true" class="nest-menu" v-if="child.children&&child.children.length>0" :routes="[child]" :key="child.path"></sidebar-item>
 
-            <router-link v-else :to="item.path+'/'+child.path" :key="child.name">
-              <el-menu-item :index="item.path+'/'+child.path" @click="getStore(child.meta.title)">
-                <svg-icon v-if="child.meta&&child.meta.icon" :icon-class="child.meta.icon"></svg-icon>
-                <span v-if="child.meta&&child.meta.title" slot="title">{{child.meta.title}}</span>
-              </el-menu-item>
-            </router-link>
+              <router-link v-else :to="item.path+'/'+child.path" :key="child.name">
+                <el-menu-item :index="item.path+'/'+child.path" @click="getStore(child.meta.title)">
+                  <svg-icon v-if="child.meta&&child.meta.icon" :icon-class="child.meta.icon"></svg-icon>
+                  <span v-if="child.meta&&child.meta.title" slot="title">{{child.meta.title}}</span>
+                </el-menu-item>
+              </router-link>
+            </div>
+
           </template>
         </el-submenu>
       </div>
@@ -67,19 +70,43 @@ export default {
       if (name === "平台/目录信息") {
         console.log(name);
       }
-      if (name === "请求详情") {
+      if (name === "数据传输") {
         console.log(name);
       }
       if (name === "权限管理") {
-        console.log(name);
-      }
-      if (name === "规则配置") {
-        console.log(name);
+        this.setStore(3);
       }
       if (name === "审计管理") {
-        console.log(name);
+        this.setStore(5);
+      }
+      if (name === "系统日志") {
+
+      }
+      if (name === "操作日志") {
+
+      }
+    },
+    async setStore(id) {
+      let xx = [];
+      await this.$http({
+        method: 'get',
+        url: '/api/d/checkPermsMatch?parentId=' + id
+      })
+        .then(function (res) {
+          xx = res.data;
+          console.log("执行乐乐乐乐乐");
+        })
+        .catch(function (error) {
+          console.log(error);
+        })
+      if (id === 3) {
+        this.$store.state.permissionManage = xx;
+      }
+      if (id === 5) {
+        this.$store.state.audit = xx;
       }
     }
+
   }
 }
 </script>
