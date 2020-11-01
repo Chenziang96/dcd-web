@@ -89,7 +89,7 @@ export default {
       let that = this;
       this.$http({
         method: 'get',
-        url: '/api/a/requestDetail/findByUuId?uuId=' + this.requestData.uuId,
+        url: '/api/hibernate/requestDetail/findByUuId?uuId=' + this.requestData.uuId,
       })
         .then(function (res) {
           console.log(res);

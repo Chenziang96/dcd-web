@@ -10,35 +10,15 @@ module.exports = {
     assetsSubDirectory: 'static',
     assetsPublicPath: '/',
     proxyTable: {
-      '/api/a': {
-        target: 'http://localhost:9035',   //设置你调用的接口域名和端口号 别忘了加http
+      '/api': {
+        target: 'http://121.248.49.61:5001',   //设置你调用的接口域名和端口号 别忘了加http
         changeOrigin: true,       //這裡true表示实现跨域
         pathRewrite: {
-          '^/api/a': '/'    //这里理解成用‘/api’代替target里面的地址，后面组件中我们掉接口时直接用api代替 比如我要调用'http://40.00.100.100:3002/user/add'，直接写‘/api/user/add’即可
-        }
-      },
-      '/api/b': {
-        target: 'http://localhost:9036',   //设置你调用的接口域名和端口号 别忘了加http
-        changeOrigin: true,       //這裡true表示实现跨域
-        pathRewrite: {
-          '^/api/b': '/'    //这里理解成用‘/api’代替target里面的地址，后面组件中我们掉接口时直接用api代替 比如我要调用'http://40.00.100.100:3002/user/add'，直接写‘/api/user/add’即可
-        }
-      },
-      '/api/c': {
-        target: 'http://localhost:9044',   //设置你调用的接口域名和端口号 别忘了加http
-        changeOrigin: true,       //這裡true表示实现跨域
-        pathRewrite: {
-          '^/api/c': '/'    //这里理解成用‘/api’代替target里面的地址，后面组件中我们掉接口时直接用api代替 比如我要调用'http://40.00.100.100:3002/user/add'，直接写‘/api/user/add’即可
-        }
-      },
-      '/api/d': {
-        target: 'http://localhost:9032',   //设置你调用的接口域名和端口号 别忘了加http
-        changeOrigin: true,       //這裡true表示实现跨域
-        pathRewrite: {
-          '^/api/d': '/'    //这里理解成用‘/api’代替target里面的地址，后面组件中我们掉接口时直接用api代替 比如我要调用'http://40.00.100.100:3002/user/add'，直接写‘/api/user/add’即可
+          '^/api': '/'    //这里理解成用‘/api’代替target里面的地址，后面组件中我们掉接口时直接用api代替 比如我要调用'http://40.00.100.100:3002/user/add'，直接写‘/api/user/add’即可
         }
       },
     },
+
     // Various Dev Server settings
     host: 'localhost', // can be overwritten by process.env.HOST
     port: 8080, // can be overwritten by process.env.PORT, if port is in use, a free one will be determined

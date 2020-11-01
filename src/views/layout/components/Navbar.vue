@@ -58,7 +58,7 @@ export default {
       // this.$store.dispatch('LogOut').then(() => {
       this.$http({
         method: 'post',
-        url: '/api/d/logOff'
+        url: '/api/user/logOff'
       });
       this.$router.push('/login');
       location.reload() // 为了重新实例化vue-router对象 避免bug

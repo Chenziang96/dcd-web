@@ -364,7 +364,7 @@ export default {
       let that = this;
       await this.$http({
         method: 'get',
-        url: '/api/d/checkPermsMatch?parentId=4'
+        url: '/api/userclient/checkPermsMatch?parentId=4'
       })
         .then(function (res) {
           that.btnPermission = res.data;
@@ -375,7 +375,7 @@ export default {
         })
       this.$http({
         method: 'get',
-        url: '/api/c/rule/findAll'
+        url: '/api/ruleconfiguration/rule/findAll'
       })
         .then(function (res) {
           console.log(res);
@@ -474,7 +474,7 @@ export default {
       let that = this;
       this.$http({
         method: 'get',
-        url: '/api/a/device/findAllPlatformNameRule'
+        url: '/api/hibernate/device/findAllPlatformNameRule'
       })
         .then(function (res) {
           console.log(res.data);
@@ -532,7 +532,7 @@ export default {
         console.log(temp);
         await this.$http({
           method: 'post',
-          url: '/api/c/rule/insert',
+          url: '/api/ruleconfiguration/rule/insert',
           data: temp
         })
           .then(function (res) {
@@ -554,7 +554,7 @@ export default {
       let that = this;
       await this.$http({
         method: 'post',
-        url: '/api/c/rule/updateRuleStatusByUuId?uuId='+row.uuId+'&ruleStatus='+row.ruleStatus,
+        url: '/api/ruleconfiguration/rule/updateRuleStatusByUuId?uuId='+row.uuId+'&ruleStatus='+row.ruleStatus,
       }).then(function (res) {
           that.$message({
             message: res.data.info,
@@ -599,7 +599,7 @@ export default {
         }).then(async () => {
           await this.$http({
             method: 'post',
-            url: '/api/c/rule/updateByUuId?uuId='+that.rulesChangeData.uuId+'&srcPlatform='+that.rulesChangeData.srcPlatform
+            url: '/api/ruleconfiguration/rule/updateByUuId?uuId='+that.rulesChangeData.uuId+'&srcPlatform='+that.rulesChangeData.srcPlatform
             +'&dstPlatform='+that.rulesChangeData.dstPlatform+'&levelOperator='+that.rulesChangeData.levelOperator+'&safetyLevel='+that.rulesChangeData.safetyLevel+'&ruleAction='+
             that.rulesChangeData.ruleAction,
           })
@@ -630,7 +630,7 @@ export default {
       }).then(async () => {
         await this.$http({
           method: 'post',
-          url: '/api/c/rule/deleteByUuId?uuId='+row.uuId,
+          url: '/api/ruleconfiguration/rule/deleteByUuId?uuId='+row.uuId,
         })
           .then(function (res) {
             that.$message({

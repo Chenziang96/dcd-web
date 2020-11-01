@@ -152,7 +152,7 @@
         let that = this;
         await this.$http({
           method: 'get',
-          url: '/api/d/checkPermsMatch?parentId=7'
+          url: '/api/userclient/checkPermsMatch?parentId=7'
         })
           .then(function (res) {
             that.btnPermission = res.data;
@@ -163,7 +163,7 @@
           })
         this.$http({
           method: 'get',
-          url: '/api/b/role/findAll'
+          url: '/api/authoritymanage/role/findAll'
         })
           .then(function (res) {
             console.log(res);
@@ -208,7 +208,7 @@
           console.log(temp);
           await this.$http({
             method: 'post',
-            url: '/api/b/role/insert',
+            url: '/api/authoritymanage/role/insert',
             data: temp
           })
             .then(function (res) {
@@ -250,7 +250,7 @@
         }).then(async () => {
           await this.$http({
             method: 'post',
-            url: '/api/b/role/updateById?id='+this.roleChange.id+'&roleName='+this.roleChange.roleName+'&description='+this.roleChange.description,
+            url: '/api/authoritymanage/role/updateById?id='+this.roleChange.id+'&roleName='+this.roleChange.roleName+'&description='+this.roleChange.description,
           })
             .then(function (res) {
               that.$message({
@@ -277,7 +277,7 @@
         }).then(async () => {
           await this.$http({
             method: 'post',
-            url: '/api/b/role/deleteByRoleName?roleName='+row.roleName,
+            url: '/api/authoritymanage/role/deleteByRoleName?roleName='+row.roleName,
           })
             .then(function (res) {
               that.$message({
@@ -299,7 +299,7 @@
         let that = this;
         this.$http({
           method: 'get',
-          url: '/api/b/rolePermission/findPermissionNameByRoleName?roleName='+row.roleName,
+          url: '/api/authoritymanage/rolePermission/findPermissionNameByRoleName?roleName='+row.roleName,
         }).then(function (res) {
             console.log(res);
             that.permissionDetailData = res.data;
@@ -314,7 +314,7 @@
         let that = this;
         await this.$http({
           method: 'get',
-          url: '/api/b/permission/getAllPermissionName',
+          url: '/api/authoritymanage/permission/getAllPermissionName',
         })
           .then(function (res) {
             console.log(res);
@@ -344,7 +344,7 @@
           console.log(temp);
           await this.$http({
             method: 'post',
-            url: '/api/b/rolePermission/insertRoleNameAndPermissionNameList?roleName='+this.rolePermissionChangeName+'&permissionNameList='+this.permissionChangeData,
+            url: '/api/authoritymanage/rolePermission/insertRoleNameAndPermissionNameList?roleName='+this.rolePermissionChangeName+'&permissionNameList='+this.permissionChangeData,
           })
             .then(function (res) {
               that.$message({

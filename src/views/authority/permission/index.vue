@@ -114,7 +114,7 @@
         let that = this;
         await this.$http({
           method: 'get',
-          url: '/api/d/checkPermsMatch?parentId=6'
+          url: '/api/userclient/checkPermsMatch?parentId=6'
         })
           .then(function (res) {
             that.btnPermission = res.data;
@@ -125,7 +125,7 @@
           })
         this.$http({
           method: 'get',
-          url: '/api/b/permission/findAll'
+          url: '/api/authoritymanage/permission/findAll'
         })
           .then(function (res) {
             console.log(res);
@@ -172,7 +172,7 @@
         }).then(async () => {
           await this.$http({
             method: 'post',
-            url: '/api/b/permission/updateById?id='+this.permissionChange.id+'&permissionName='+this.permissionChange.permissionName+'&description='+this.permissionChange.description,
+            url: '/api/authoritymanage/permission/updateById?id='+this.permissionChange.id+'&permissionName='+this.permissionChange.permissionName+'&description='+this.permissionChange.description,
           }).then(function (res) {
               that.$message({
                 message: res.data.info,
@@ -208,7 +208,7 @@
           console.log(temp);
           await this.$http({
             method: 'post',
-            url: '/api/b/permission/insert',
+            url: '/api/authoritymanage/permission/insert',
             data: temp
           }).then(function (res) {
               that.$message({
@@ -237,7 +237,7 @@
         }).then(async () => {
           await this.$http({
             method: 'post',
-            url: '/api/b/permission/deleteByPermissionName?permissionName='+row.permissionName,
+            url: '/api/authoritymanage/permission/deleteByPermissionName?permissionName='+row.permissionName,
           })
             .then(function (res) {
               that.$message({

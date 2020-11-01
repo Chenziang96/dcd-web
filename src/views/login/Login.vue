@@ -65,7 +65,7 @@
         // console.log(getters.token());
         await this.$http({
           method: 'get',
-          url: '/api/d/doLogin?userName='+that.user.userName+'&pwd='+that.user.pwd,
+          url: '/api/userclient/doLogin?userName='+that.user.userName+'&pwd='+that.user.pwd,
         })
           .then((res)=> {
             console.log(res);
@@ -91,7 +91,7 @@
         // console.log(getters.token());
         await this.$http({
           method: 'post',
-          url: '/api/d/login',
+          url: '/api/userclient/login',
           data: temp,
         })
           .then((res)=> {
@@ -115,7 +115,7 @@
         let that = this;
         await this.$http({
           method: 'get',
-          url: '/api/d/checkPermsMatch?parentId=0'
+          url: '/api/userclient/checkPermsMatch?parentId=0'
         })
           .then(function (res) {
             that.s = res.data;
@@ -133,7 +133,7 @@
         let that = this;
         this.$http({
           method: 'post',
-          url: '/api/d/insert?userName='+that.userRegister.userName+'&pwd='+that.userRegister.pwd+'&platformIp='+that.userRegister.platformIp,
+          url: '/api/userclient/insert?userName='+that.userRegister.userName+'&pwd='+that.userRegister.pwd+'&platformIp='+that.userRegister.platformIp,
         })
           .then((res)=> {
             console.log(res);

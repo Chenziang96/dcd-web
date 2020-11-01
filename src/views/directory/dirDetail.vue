@@ -139,7 +139,7 @@
         let that = this;
         this.$http({
           method: 'get',
-          url: '/api/a/directory/findByPlatformIp?platformIp=' + this.platform.platformIp,
+          url: '/api/hibernate/directory/findByPlatformIp?platformIp=' + this.platform.platformIp,
         })
           .then(function (res) {
             console.log(res);
@@ -174,7 +174,7 @@
         let that = this;
         this.$http({
           method: 'get',
-          url: '/api/a/directory/findAllResourceType'
+          url: '/api/hibernate/directory/findAllResourceType'
         })
           .then(function (res) {
             console.log(res.data);
@@ -191,7 +191,7 @@
           let that = this;
           this.$http({
             method: 'get',
-            url: '/api/a/directory/findByPlatformIpAndResourceType?platformIp='+this.platform.platformIp+'&resourceType='+this.value,
+            url: '/api/hibernate/directory/findByPlatformIpAndResourceType?platformIp='+this.platform.platformIp+'&resourceType='+this.value,
           })
             .then(function (res) {
               console.log(res);

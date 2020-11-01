@@ -165,7 +165,7 @@
         let that = this;
         await this.$http({
           method: 'get',
-          url: '/api/d/checkPermsMatch?parentId=8'
+          url: '/api/userclient/checkPermsMatch?parentId=8'
         })
           .then(function (res) {
             that.btnPermission = res.data;
@@ -176,7 +176,7 @@
           })
         this.$http({
           method: 'get',
-          url: '/api/a/user/list'
+          url: '/api/hibernate/user/list'
         })
           .then(function (res) {
             console.log(res);
@@ -219,7 +219,7 @@
         let that = this;
         this.$http({
           method: 'get',
-          url: '/api/b/group/findAllGroupName'
+          url: '/api/authoritymanage/group/findAllGroupName'
         })
           .then(function (res) {
             console.log(res.data);
@@ -249,7 +249,7 @@
           }).then(async () => {
             await this.$http({
               method: 'post',
-              url: '/api/b/userGroup/insertUserNameAndGroupName?userName='+this.userGroupChange.userName+'&groupName='+this.userGroupChange.groupName,
+              url: '/api/authoritymanage/userGroup/insertUserNameAndGroupName?userName='+this.userGroupChange.userName+'&groupName='+this.userGroupChange.groupName,
             })
               .then(function (res) {
                 that.$message({
@@ -275,7 +275,7 @@
           }).then(async () => {
             await this.$http({
               method: 'post',
-              url: '/api/b/userGroup/updateUserNameAndGroupName?userName='+this.userGroupChange.userName+'&groupName='+this.userGroupChange.groupName,
+              url: '/api/authoritymanage/userGroup/updateUserNameAndGroupName?userName='+this.userGroupChange.userName+'&groupName='+this.userGroupChange.groupName,
             }).then(function (res) {
                 that.$message({
                   message: res.data.info,
@@ -298,7 +298,7 @@
         let that = this;
         this.$http({
           method: 'get',
-          url: '/api/b/userPermission/getUserPermissionNameByUserName?userName='+row.userName,
+          url: '/api/authoritymanage/userPermission/getUserPermissionNameByUserName?userName='+row.userName,
         })
           .then(function (res) {
             console.log(res);
@@ -314,7 +314,7 @@
         let that = this;
         await this.$http({
           method: 'get',
-          url: '/api/b/userPermission/getAllPermissionByUserName?userName=' + this.userPermissionChangeName,
+          url: '/api/authoritymanage/userPermission/getAllPermissionByUserName?userName=' + this.userPermissionChangeName,
         })
           .then(function (res) {
             console.log(res);
@@ -344,7 +344,7 @@
           console.log(temp);
           await this.$http({
             method: 'post',
-            url: '/api/b/userPermission/insertUserNameAndPermissionNameList?userName='+this.userPermissionChangeName+'&permissionNameList='+this.permissionChangeData,
+            url: '/api/authoritymanage/userPermission/insertUserNameAndPermissionNameList?userName='+this.userPermissionChangeName+'&permissionNameList='+this.permissionChangeData,
           })
             .then(function (res) {
               that.$message({
@@ -386,7 +386,7 @@
         }).then(async () => {
           await this.$http({
             method: 'post',
-            url: '/api/c/delete?userName='+row.userName,
+            url: '/api/userclient/delete?userName='+row.userName,
           })
             .then(function (res) {
               that.$message({

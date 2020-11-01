@@ -119,7 +119,7 @@
             let that = this;
             this.$http({
               method: 'get',
-              url: '/api/a/requestInfo/findAll',
+              url: '/api/hibernate/requestInfo/findAll',
 
             })
               .then(function (res) {

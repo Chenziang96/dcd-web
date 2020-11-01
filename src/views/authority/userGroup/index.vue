@@ -146,7 +146,7 @@
         let that = this;
         await this.$http({
           method: 'get',
-          url: '/api/d/checkPermsMatch?parentId=9'
+          url: '/api/userclient/checkPermsMatch?parentId=9'
         })
           .then(function (res) {
             that.btnPermission = res.data;
@@ -157,7 +157,7 @@
           })
         this.$http({
           method: 'get',
-          url: '/api/b/group/findAll'
+          url: '/api/authoritymanage/group/findAll'
         })
           .then(function (res) {
             console.log(res.data);
@@ -202,7 +202,7 @@
           console.log(temp);
           await this.$http({
             method: 'post',
-            url: '/api/b/group/insert',
+            url: '/api/authoritymanage/group/insert',
             data: temp
           })
             .then(function (res) {
@@ -244,7 +244,7 @@
         }).then(async () => {
           await this.$http({
             method: 'post',
-            url: '/api/b/group/updateById?id='+this.userGroupChange.id+'&groupName='+this.userGroupChange.groupName+'&description='+this.userGroupChange.description,
+            url: '/api/authoritymanage/group/updateById?id='+this.userGroupChange.id+'&groupName='+this.userGroupChange.groupName+'&description='+this.userGroupChange.description,
           })
             .then(function (res) {
               that.$message({
@@ -271,7 +271,7 @@
         }).then(async () => {
           await this.$http({
             method: 'post',
-            url: '/api/b/group/deleteByGroupName?groupName='+row.groupName,
+            url: '/api/authoritymanage/group/deleteByGroupName?groupName='+row.groupName,
           })
             .then(function (res) {
               that.$message({
@@ -305,7 +305,7 @@
         let that = this;
         this.$http({
           method: 'get',
-          url: '/api/b/role/findAllRoleName'
+          url: '/api/authoritymanage/role/findAllRoleName'
         })
           .then(function (res) {
             console.log(res.data);
@@ -332,7 +332,7 @@
           }).then(async () => {
             await this.$http({
               method: 'post',
-              url: '/api/b/groupRole/insertGroupNameAndRoleName?groupName='+this.groupRoleChange.groupName+'&roleName='+this.groupRoleChange.roleName,
+              url: '/api/authoritymanage/groupRole/insertGroupNameAndRoleName?groupName='+this.groupRoleChange.groupName+'&roleName='+this.groupRoleChange.roleName,
             })
               .then(function (res) {
                 console.log(res);
@@ -354,7 +354,7 @@
           }).then(async () => {
             await this.$http({
               method: 'post',
-              url: '/api/b/groupRole/updateByGroupName?groupName='+this.groupRoleChange.groupName+'&roleName='+this.groupRoleChange.roleName,
+              url: '/api/authoritymanage/groupRole/updateByGroupName?groupName='+this.groupRoleChange.groupName+'&roleName='+this.groupRoleChange.roleName,
             })
               .then(function (res) {
                 that.$message({

@@ -96,7 +96,7 @@
         let that = this;
         this.$http({
           method: 'get',
-          url: '/api/a/device/findAll'
+          url: '/api/hibernate/device/findAll'
         })
         .then(function (res) {
           that.allList = res.data;               //第二个data是后端传递的数组名，可能需要修改
@@ -131,7 +131,7 @@
       test() {
         this.$http({
           method: 'get',
-          url: '/api/d/checkPerms'
+          url: '/api/userclient/checkPerms'
         }).then((res)=> {
           console.log(res);
           // storage.setItem('JESSIONID',)

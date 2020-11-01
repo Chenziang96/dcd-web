@@ -90,7 +90,7 @@ export default {
       let xx = [];
       await this.$http({
         method: 'get',
-        url: '/api/d/checkPermsMatch?parentId=' + id
+        url: '/api/userclient/checkPermsMatch?parentId=' + id
       })
         .then(function (res) {
           xx = res.data;
