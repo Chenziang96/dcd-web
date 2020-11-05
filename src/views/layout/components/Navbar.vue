@@ -56,11 +56,11 @@ export default {
     toggleSideBar() {
       this.$store.dispatch('ToggleSideBar')
     },
-    logout() {
+    async logout() {
       // this.$store.dispatch('LogOut').then(() => {
-      this.$http({
+      await this.$http({
         method: 'post',
-        url: '/api/user/logOff'
+        url: '/api/userclient/logOff'
       });
       this.$router.push('/login');
       location.reload() // 为了重新实例化vue-router对象 避免bug

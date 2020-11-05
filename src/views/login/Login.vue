@@ -1,36 +1,38 @@
 <template>
   <div class="background">
-    <div :class="className">
-      <div id="signIn">
-        <h1 class="h1" style="padding-top: 50px">Login</h1>
-        <div style="padding-left: 120px;padding-right: 120px;margin-top: 70px" >
-          <label>
-            <input style="margin: 40px auto;" type="text" placeholder="Username" v-model="user.userName" class="usn">
-          </label>
-          <label>
-            <input style="margin: 40px auto;" type="password" placeholder="Password" v-model="user.pwd" class="psd">
-          </label>
+    <div class="sss">
+      <div :class="className">
+        <div id="signIn">
+          <h1 class="h1" style="padding-top: 50px">Login</h1>
+          <div style="padding-left: 120px;padding-right: 120px;margin-top: 70px" >
+            <label>
+              <input style="margin: 40px auto;" type="text" placeholder="Username" v-model="user.userName" class="usn">
+            </label>
+            <label>
+              <input style="margin: 40px auto;" type="password" placeholder="Password" v-model="user.pwd" class="psd">
+            </label>
+          </div>
+          <div>
+            <button class="btn" @click="login()">Sign in</button>
+          </div>
+          <span id="toRegister" @click="toSignUp" style="margin-top: 60px" class="toSign">to Sign up</span>
         </div>
-        <div>
-          <button class="btn" @click="login()">Sign in</button>
+        <div id="signUp">
+          <h1 class="h1" style="padding-top: 50px">Register</h1>
+          <div style="padding-left: 120px;padding-right: 120px;" >
+            <label>
+              <input style="margin: 20px auto;" type="text" placeholder="Username" v-model="userRegister.userName" class="usn">
+            </label>
+            <label>
+              <input style="margin: 20px auto;" type="password" placeholder="Password" v-model="userRegister.pwd" class="psd">
+            </label>
+            <label>
+              <input style="margin: 20px auto;" type="text" placeholder="PlatformIp" v-model="userRegister.platformIp" class="usn">
+            </label>
+          </div>
+          <button class="btn" @click="register()">Sign up</button>
+          <span id="toLogin" @click="toSignIn" style="padding-top: 35px;" class="toSign">to Sign in</span>
         </div>
-        <span id="toRegister" @click="toSignUp" style="margin-top: 60px" class="toSign">to Sign up</span>
-      </div>
-      <div id="signUp">
-        <h1 class="h1" style="padding-top: 50px">Register</h1>
-        <div style="padding-left: 120px;padding-right: 120px;" >
-          <label>
-            <input style="margin: 20px auto;" type="text" placeholder="Username" v-model="userRegister.userName" class="usn">
-          </label>
-          <label>
-            <input style="margin: 20px auto;" type="password" placeholder="Password" v-model="userRegister.pwd" class="psd">
-          </label>
-          <label>
-            <input style="margin: 20px auto;" type="text" placeholder="PlatformIp" v-model="userRegister.platformIp" class="usn">
-          </label>
-        </div>
-        <button class="btn" @click="register()">Sign up</button>
-        <span id="toLogin" @click="toSignIn" style="padding-top: 35px;" class="toSign">to Sign in</span>
       </div>
     </div>
   </div>
@@ -163,15 +165,21 @@
 <style scoped>
   .background {
     background: url("../../assets/background.jpg") no-repeat;
-    background-size: 100% auto;
-    position: absolute;
-    width: 100%;
-    height: 100%;
+    background-size: 100% 100%;
+    top: 0px; /*这里是设置与顶部的距离*/
+    left: 0px; /*这里是设置与左边的距离*/
+    bottom: 0px;
+    right: 0px;
+  }
+
+  .sss {
+    padding-top: 1px;
+    padding-bottom: 9%;
   }
 
   .login {
-    width: 30%;
-    height: 62%;
+    width: 600px;
+    height: 600px;
     margin: 10% auto auto;
     text-align: center;
     background-color: #00000090;
@@ -180,8 +188,8 @@
   }
 
   .register {
-    width: 30%;
-    height: 62%;
+    width: 600px;
+    height: 600px;
     margin: 10% auto auto;
     text-align: center;
     background-color: #00000090;
