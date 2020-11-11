@@ -62,30 +62,6 @@
       }
     },
     methods: {
-      async login2(){
-        let that = this;
-        // console.log(getters.token());
-        await this.$http({
-          method: 'get',
-          url: '/api/userclient/doLogin?userName='+that.user.userName+'&pwd='+that.user.pwd,
-        })
-          .then((res)=> {
-            console.log(res);
-            // storage.setItem('JESSIONID',)
-            console.log(res.data);
-            if (res.data === "登录成功！") {
-              that.changeData1();
-            } else {
-              this.$message({
-                message: res.data,
-                type: "error"
-              });
-            }
-          })
-          .catch(function (error) {
-            console.log(error);
-          })
-      },
       //登录
       async login(){
         let that = this;
@@ -98,13 +74,14 @@
         })
           .then((res)=> {
             console.log(res);
-            if (res.data.result === "登录成功!") {
+            if (res.data.status) {
               that.changeData1();
             } else {
               this.$message({
-                message: res.data,
+                message: res.data.msg,
                 type: "error"
               });
+              that.user.pwd = null;
             }
             // storage.setItem('JESSIONID',)
           })

@@ -35,13 +35,16 @@
           <template slot-scope="scope">{{scope.row.userName}}</template>
         </el-table-column>
         <el-table-column label="操作地址" width="240" align="center">
-          <template slot-scope="scope">{{scope.row.platformIp }}</template>
+          <template slot-scope="scope">{{scope.row.ip }}</template>
         </el-table-column>
         <el-table-column label="时间" width="260" align="center">
-          <template slot-scope="scope">{{scope.row.time}}</template>
+          <template slot-scope="scope">{{scope.row.createTime}}</template>
         </el-table-column>
         <el-table-column label="操作类型" width="200" align="center">
           <template slot-scope="scope">{{scope.row.operationType}}</template>
+        </el-table-column>
+        <el-table-column label="请求地址" width="200" align="center">
+          <template slot-scope="scope">{{scope.row.requestUrl}}</template>
         </el-table-column>
         <el-table-column label="说明" align="center">
           <template slot-scope="scope">{{scope.row.description}}</template>
@@ -84,12 +87,12 @@
         selectList: [],
         list: [],
         systemLogData: [
-          { userName: "张三", platformIp: "127.0.0.1", time: "2020-09-17 15:46", operationType: "登录",
-            description: "张三于2020-09-17 15：46登录系统" },
-          { userName: "李四", platformIp: "127.0.0.2", time: "2020-09-16 15:46", operationType: "登录",
-            description: "李四于2020-09-16 15：46登录系统" },
-          { userName: "王五", platformIp: "127.0.0.3", time: "2020-09-15 15:46", operationType: "登录",
-            description: "王五于2020-09-15 15：46登录系统" },
+          { userName: "张三", ip: "127.0.0.1", createTime: "2020-09-17 15:46", operationType: "登录",
+            description: "张三于2020-09-17 15:46登录系统" },
+          { userName: "李四", ip: "127.0.0.2", createTime: "2020-09-16 15:46", operationType: "登录",
+            description: "李四于2020-09-16 15:46登录系统" },
+          { userName: "王五", ip: "127.0.0.3", createTime: "2020-09-15 15:46", operationType: "登录",
+            description: "王五于2020-09-15 15:46登录系统" },
         ],
       }
     },

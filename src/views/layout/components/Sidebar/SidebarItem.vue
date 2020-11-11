@@ -48,7 +48,7 @@ export default {
   name: 'SidebarItem',
   props: {
     data: {
-      type: Array
+      type: Object
     },
     routes: {
       type: Array
@@ -94,7 +94,6 @@ export default {
       })
         .then(function (res) {
           xx = res.data;
-          console.log("执行乐乐乐乐乐");
         })
         .catch(function (error) {
           console.log(error);

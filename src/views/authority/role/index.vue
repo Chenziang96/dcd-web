@@ -63,6 +63,7 @@
             <template slot-scope="scope">{{scope.row}}</template>
           </el-table-column>
         </el-table>
+<!--        <el-tree :data="permissionDetailTree"></el-tree>-->
       </div>
       <div slot="footer" class="dialog-footer">
         <el-button type="danger" @click="permissionDistribution">分配权限</el-button>
@@ -131,6 +132,7 @@
         //权限详情查看
         permissionDetailVisible: false,
         permissionDetailData: [],
+        permissionDetailTree: [],
         //权限分配
         innerVisible: false,
         checkAll: null,
@@ -212,19 +214,29 @@
             data: temp
           })
             .then(function (res) {
-              that.$message({
-                message: res.data.info,
-                type: res.data.status
-              });
-              that.roleAdd.roleName = null;
-              that.roleAdd.description = null;
+              if (res.data.status) {
+                that.$message({
+                  message: res.data.msg,
+                  type: "success"
+                });
+                that.confirmAddSuccess();
+              } else {
+                that.$message({
+                  message: res.data.msg,
+                  type: "error"
+                });
+              }
             })
             .catch(function (error) {
               console.log(error);
             })
-          that.get1();
-          that.addDialogFormVisible = false;
         });
+      },
+      confirmAddSuccess() {
+        this.roleAdd.roleName = null;
+        this.roleAdd.description = null;
+        this.get1();
+        this.addDialogFormVisible = false;
       },
 
       //编辑
@@ -253,10 +265,17 @@
             url: '/api/authoritymanage/role/updateById?id='+this.roleChange.id+'&roleName='+this.roleChange.roleName+'&description='+this.roleChange.description,
           })
             .then(function (res) {
-              that.$message({
-                message: res.data.info,
-                type: res.data.status
-              });
+              if (res.data.status) {
+                that.$message({
+                  message: res.data.msg,
+                  type: "success"
+                });
+              } else {
+                that.$message({
+                  message: res.data.msg,
+                  type: "error"
+                });
+              }
             })
             .catch(function (error) {
               console.log(error);
@@ -280,10 +299,17 @@
             url: '/api/authoritymanage/role/deleteByRoleName?roleName='+row.roleName,
           })
             .then(function (res) {
-              that.$message({
-                message: res.data.info,
-                type: res.data.status
-              });
+              if (res.data.status) {
+                that.$message({
+                  message: res.data.msg,
+                  type: "success"
+                });
+              } else {
+                that.$message({
+                  message: res.data.msg,
+                  type: "error"
+                });
+              }
             })
             .catch(function (error) {
               console.log(error);
@@ -293,6 +319,24 @@
       },
 
       //权限详情
+      // permissionDetail2(index, row) {
+      //   this.permissionDetailVisible = true;
+      //   let that = this;
+      //   this.$http({
+      //     method: 'get',
+      //     url: '/api/authoritymanage/rolePermission/findPermissionNameByRoleName?roleName='+row.roleName+'&parentId=0',
+      //   }).then(function (res) {
+      //     console.log(res);
+      //     for (let i = 0; i < res.data.length; i++) {
+      //       that.permissionDetailTree.id =
+      //     }
+      //     that.permissionDetailTree = res.data;
+      //     that.changeList();
+      //   })
+      //     .catch(function (error) {  console.log(error);
+      //     })
+      // },
+
       permissionDetail(index,row) {
         this.permissionDetailVisible = true;
         this.rolePermissionChangeName = row.roleName;

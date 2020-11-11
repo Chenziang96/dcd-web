@@ -61,7 +61,14 @@ export default {
       await this.$http({
         method: 'post',
         url: '/api/userclient/logOff'
-      });
+      })
+        .then((res)=> {
+          console.log(res);
+          // storage.setItem('JESSIONID',)
+      })
+        .catch(function (error) {
+          console.log(error);
+        });
       this.$router.push('/login');
       location.reload() // 为了重新实例化vue-router对象 避免bug
       // })

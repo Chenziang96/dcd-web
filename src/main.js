@@ -13,6 +13,7 @@ import '@/styles/index.scss' //全局样式
 import axios from 'axios'
 import '@/permission' // permission control
 
+
 Vue.config.productionTip = false
 Vue.use(ElementUI);
 Vue.prototype.$http = axios;

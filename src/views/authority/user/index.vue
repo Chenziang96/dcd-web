@@ -15,11 +15,8 @@
         <el-table-column label="所在用户组" width="200" align="center">
           <template slot-scope="scope">{{scope.row.groupName}}</template>
         </el-table-column>
-        <el-table-column label="用户密码" width="200" align="center">
-          <template slot-scope="scope">{{scope.row.pwd}}</template>
-        </el-table-column>
-        <el-table-column label="平台IP" width="230" align="center">
-          <template slot-scope="scope">{{scope.row.platformIp }}</template>
+        <el-table-column label="平台名称" width="230" align="center">
+          <template slot-scope="scope">{{scope.row.platformName}}</template>
         </el-table-column>
         <el-table-column label="提交时间" width="230" align="center">
           <template slot-scope="scope">{{scope.row.registerTime}}</template>
@@ -277,10 +274,17 @@
               method: 'post',
               url: '/api/authoritymanage/userGroup/updateUserNameAndGroupName?userName='+this.userGroupChange.userName+'&groupName='+this.userGroupChange.groupName,
             }).then(function (res) {
+              if (res.data.status) {
                 that.$message({
-                  message: res.data.info,
-                  type: res.data.status
+                  message: res.data.msg,
+                  type: "success"
                 });
+              } else {
+                that.$message({
+                  message: res.data.msg,
+                  type: "error"
+                });
+              }
               })
               .catch(function (error) {
                 console.log(error);
@@ -347,10 +351,17 @@
             url: '/api/authoritymanage/userPermission/insertUserNameAndPermissionNameList?userName='+this.userPermissionChangeName+'&permissionNameList='+this.permissionChangeData,
           })
             .then(function (res) {
-              that.$message({
-                message: res.data.info,
-                type: res.data.status
-              });
+              if (res.data.status) {
+                that.$message({
+                  message: res.data.msg,
+                  type: "success"
+                });
+              } else {
+                that.$message({
+                  message: res.data.msg,
+                  type: "error"
+                });
+              }
             })
             .catch(function (error) {
               console.log(error);
@@ -386,13 +397,20 @@
         }).then(async () => {
           await this.$http({
             method: 'post',
-            url: '/api/userclient/delete?userName='+row.userName,
+            url: '/api/userclient/delete?userName=' + row.userName,
           })
             .then(function (res) {
-              that.$message({
-                message: res.data.info,
-                type: res.data.status
-              });
+              if (res.data.status) {
+                that.$message({
+                  message: res.data.msg,
+                  type: "success"
+                });
+              } else {
+                that.$message({
+                  message: res.data.msg,
+                  type: "error"
+                });
+              }
             })
             .catch(function (error) {
               console.log(error);

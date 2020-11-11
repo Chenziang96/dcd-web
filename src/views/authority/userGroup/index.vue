@@ -247,10 +247,17 @@
             url: '/api/authoritymanage/group/updateById?id='+this.userGroupChange.id+'&groupName='+this.userGroupChange.groupName+'&description='+this.userGroupChange.description,
           })
             .then(function (res) {
-              that.$message({
-                message: res.data.info,
-                type: res.data.status
-              });
+              if (res.data.status) {
+                that.$message({
+                  message: res.data.msg,
+                  type: "success"
+                });
+              } else {
+                that.$message({
+                  message: res.data.msg,
+                  type: "error"
+                });
+              }
             })
             .catch(function (error) {
               console.log(error);
