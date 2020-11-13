@@ -173,7 +173,8 @@
           })
         this.$http({
           method: 'get',
-          url: '/api/hibernate/user/list'
+          // url: '/api/hibernate/user/list'
+          url: '/api/userclient/list'
         })
           .then(function (res) {
             console.log(res);

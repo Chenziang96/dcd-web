@@ -8,6 +8,7 @@ import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
 import 'ant-design-vue/dist/antd.css';
 import './icons'
+import VCharts from 'v-charts'
 import store from './store'
 import '@/styles/index.scss' //全局样式
 import axios from 'axios'
@@ -16,6 +17,7 @@ import '@/permission' // permission control
 
 Vue.config.productionTip = false
 Vue.use(ElementUI);
+Vue.use(VCharts);
 Vue.prototype.$http = axios;
 
 /* eslint-disable no-new */

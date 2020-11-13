@@ -206,19 +206,30 @@
             data: temp
           })
             .then(function (res) {
-              that.$message({
-                message: res.data.info,
-                type: res.data.status
-              });
-              that.userGroupAdd.groupName = null;
-              that.userGroupAdd.description = null;
+              if (res.data.status) {
+                that.$message({
+                  message: res.data.msg,
+                  type: "success"
+                });
+                that.confirmAddSuccess();
+              } else {
+                that.$message({
+                  message: res.data.msg,
+                  type: "error"
+                });
+              }
             })
             .catch(function (error) {
               console.log(error);
             })
-          that.get1();
-          that.addDialogFormVisible = false;
+
         });
+      },
+      confirmAddSuccess() {
+        this.userGroupAdd.groupName = null;
+        this.userGroupAdd.description = null;
+        this.get1();
+        this.addDialogFormVisible = false;
       },
 
       //编辑用户组
@@ -281,10 +292,17 @@
             url: '/api/authoritymanage/group/deleteByGroupName?groupName='+row.groupName,
           })
             .then(function (res) {
-              that.$message({
-                message: res.data.info,
-                type: res.data.status
-              });
+              if (res.data.status) {
+                that.$message({
+                  message: res.data.msg,
+                  type: "success"
+                });
+              } else {
+                that.$message({
+                  message: res.data.msg,
+                  type: "error"
+                });
+              }
             })
             .catch(function (error) {
               console.log(error);

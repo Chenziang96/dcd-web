@@ -27,7 +27,7 @@
               <input style="margin: 20px auto;" type="password" placeholder="Password" v-model="userRegister.pwd" class="psd">
             </label>
             <label>
-              <input style="margin: 20px auto;" type="text" placeholder="PlatformIp" v-model="userRegister.platformIp" class="usn">
+              <input style="margin: 20px auto;" type="text" placeholder="platformName" v-model="userRegister.platformName" class="usn">
             </label>
           </div>
           <button class="btn" @click="register()">Sign up</button>
@@ -48,14 +48,14 @@
         user: {
           userName: '',
           pwd: '',
-          platformIp:'',
+          platformName:'',
           registerTime:'',
           isOnline:'',
         },
         userRegister: {
           userName: '',
           pwd: '',
-          platformIp: ''
+          platformName: ''
         },
         s: [],
         className: 'login'
@@ -112,7 +112,7 @@
         let that = this;
         this.$http({
           method: 'post',
-          url: '/api/userclient/insert?userName='+that.userRegister.userName+'&pwd='+that.userRegister.pwd+'&platformIp='+that.userRegister.platformIp,
+          url: '/api/userclient/insert?userName='+that.userRegister.userName+'&pwd='+that.userRegister.pwd+'&platformName='+that.userRegister.platformName,
         })
           .then((res)=> {
             console.log(res);
@@ -127,7 +127,7 @@
         this.className = 'register';
         this.userRegister.userName = null;
         this.userRegister.pwd = null;
-        this.userRegister.platformIp = null;
+        this.userRegister.platformName = null;
       },
 
       toSignIn() {
