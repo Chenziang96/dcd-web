@@ -165,7 +165,7 @@
         let that = this;
         this.$http({
           method: 'get',
-          url: '/api/hibernate/syslog/selectByListQuery?ip=' + that.listQuery.ip + '&userName=' + that.listQuery.userName
+          url: '/api/auditclient/audit/selectByListQuery?ip=' + that.listQuery.ip + '&userName=' + that.listQuery.userName
             + '&createTime=' + that.listQuery.createTime,
         })
           .then(function (res) {
