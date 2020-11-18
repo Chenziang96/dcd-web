@@ -7,13 +7,13 @@
           <a-avatar :size="100" :src="link"></a-avatar>
         </div>
       </a-col>
-      <a-col :span="5">
+      <a-col :span="7">
         <div class="welcome">
-          <div style="font-size: 25px">早上好，徐浩，休息一下吧！</div>
-          <div style="margin-top: 5px">前端工程师 | 蚂蚁金服 - 某某某事业群 - VUE平台</div>
+          <div style="font-size: 25px">{{ timeFix }}，{{ userName }}，{{ welcome }}！</div>
+          <div style="margin-top: 5px">数据跨域交换中间件平台 | {{ platformName }}</div>
         </div>
       </a-col>
-      <a-col :span="17">
+      <a-col :span="15">
         <div class="extra-content">
           <div class="stat-item">
             <a-statistic title="资源数" :value="56" />
@@ -30,13 +30,13 @@
       </a-col>
     </a-card>
     <div style="margin-top: 15px;">
-      <a-row :gutter="24">
-        <a-col :xl="12" :lg="24" :md="24" :sm="24" :xs="24">
+      <a-row>
+        <a-col :span="12">
           <a-card title="平台简介" class="box-card" shadow="always">
-            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a style="font-size: 15px">数据跨域交换中间件提供了一种多物联网平台数据跨域的实现方案。
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="font-size: 15px">数据跨域交换中间件提供了一种多物联网平台数据跨域的实现方案。
               由于不同的物联网平台间的数据并不共享，使得大量的需要多平台数据联合实现的功能和业务无法开展。
               然而进行物联网数据的跨域传输涉及到了多物联网平台的权限问题和各平台中包含的隐私数据的问题也是一个难题。
-              数据跨域交换中间件便是为解决这些问题提供了一种可行的解决方案。</a>
+              数据跨域交换中间件便是为解决这些问题提供了一种可行的解决方案。</span>
           </a-card>
           <a-card title="近期动态" class="box-card" shadow="always">
             <a slot="extra" @click="toUser">用户</a>
@@ -47,7 +47,7 @@
                 <a-list-item-meta>
                   <a-avatar slot="avatar" :src="item.user.avatar"/>
                   <div slot="title">
-                    <span>{{ item.user.userName }}</span>&nbsp;
+                    <span>{{ userName }}</span>&nbsp;
                     更新了&nbsp;<a href="#" style="color: green">{{ item.project.platformName }}</a>&nbsp;
                     的&nbsp;<a href="#" style="color: green">{{ item.project.content }}</a>
                   </div>
@@ -71,7 +71,7 @@
             </a-list>
           </a-card>
         </a-col>
-        <a-col style="padding: 0 12px" :xl="12" :lg="24" :md="24" :sm="24" :xs="24">
+        <a-col style="padding: 0 0" :span="12">
           <a-card title="近期访问/被访问" class="box-card" shadow="always">
             <div class="chart-wrapper">
               <bar-chart />
@@ -128,7 +128,17 @@ export default {
         },
         pageSize: 3,
       },
+      timeFix: null,
+      welcome: null,
+      userName: null,
+      platformName: null,
     }
+  },
+  created() {
+    this.getTimeFix();
+    this.getWelcome();
+    this.getUserName();
+    this.getPlatformName();
   },
   methods: {
     toUser() {
@@ -137,7 +147,44 @@ export default {
     toPlatform() {
       this.userOrPlatform = false;
     },
-
+    getTimeFix() {
+      const time = new Date()
+      const hour = time.getHours()
+      this.timeFix = hour < 9 ? '早上好' : hour <= 11 ? '上午好' : hour <= 13 ? '中午好' : hour < 19 ? '下午好' : '晚上好';
+    },
+    getWelcome() {
+      const arr = ['休息一会儿吧', '准备吃什么呢?', '要不要打一把 LOL', '我猜你可能累了']
+      const index = Math.floor(Math.random() * arr.length)
+      this.welcome = arr[index];
+    },
+    async getUserName() {
+      let that = this;
+      await this.$http({
+        method: 'get',
+        url: '/api/userclient/getUserNameByRequest'
+      })
+        .then(function (res) {
+          that.userName = res.data;
+          console.log("执行乐乐乐乐乐");
+        })
+        .catch(function (error) {
+          console.log(error);
+        })
+    },
+    async getPlatformName() {
+      let that = this;
+      await this.$http({
+        method: 'get',
+        url: '/api/userclient/getPlatformNameByRequest'
+      })
+        .then(function (res) {
+          that.platformName = res.data;
+          console.log("执行乐乐乐乐乐");
+        })
+        .catch(function (error) {
+          console.log(error);
+        })
+    }
   }
 }
 </script>

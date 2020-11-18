@@ -6,18 +6,20 @@
         <span>筛选搜索</span>
       </div>
       <div style="margin-top: 15px">
-        <el-form :inline="true" :model="listQuery" label-width="140px">
-          <el-form-item label="IP搜索：">
-            <el-input v-model="listQuery.orderIp" class="input-width" placeholder="平台IP地址"></el-input>
+        <el-form :inline="true" :model="listQuery" label-width="100px">
+          <el-form-item label="平台名称：">
+            <el-input v-model="listQuery.platformName" class="input-width" placeholder="平台名称"></el-input>
           </el-form-item>
           <el-form-item label="创建时间：">
-            <el-date-picker class="input-width" v-model="listQuery.createTime" value-format="yyyy-MM-dd" type="date" placeholder="请选择时间"></el-date-picker>
-          </el-form-item>
-          <el-form-item label="作者搜索：">
-            <el-input v-model="listQuery.orderPerson" class="input-width" placeholder="作者姓名"></el-input>
+            <el-date-picker
+              v-model="listQuery.createTime"
+              type="datetime"
+              value-format="yyyy-MM-dd HH:mm:ss"
+              placeholder="选择日期时间">
+            </el-date-picker>
           </el-form-item>
           <el-form-item>
-            <el-button style="margin-left: 30px" type="primary" @click="test">查询搜索</el-button>
+            <el-button style="margin-left: 30px" type="primary" @click="search">查询搜索</el-button>
             <el-button style="margin-left: 15px" @click="reForm">重 置</el-button>
           </el-form-item>
         </el-form>
@@ -71,10 +73,8 @@
   const defaultListQuery = {
     pageNum: 1,
     pageSize: 10,
-    orderPerson: null,
-    orderIp: null,
-    orderDir: null,
-    createTime: null,
+    platformName: '',
+    createTime: '',
   };
   export default {
     name: "index",
@@ -122,10 +122,26 @@
       handleDetail(index, row){
         this.$router.push({path:'/directory/dirDetail',query: row})
       },
+
+      //查询按钮和重置按钮
+      search() {
+        let that = this;
+        this.$http({
+          method: 'get',
+          url: '/api/hibernate/device/selectByListQuery?platformName=' + that.listQuery.platformName,
+        })
+          .then(function (res) {
+            that.allList = res.data;
+            that.changeList();
+          })
+          .catch(function (error) {
+            console.log(error);
+          })
+      },
       reForm(){
         this.listQuery.createTime='';
-        this.listQuery.orderIp='';
-        this.listQuery.orderPerson='';
+        this.listQuery.platformName='';
+        this.get1();
       },
 
       test() {

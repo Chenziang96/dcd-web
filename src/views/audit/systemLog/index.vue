@@ -3,18 +3,30 @@
     <el-card class="filter-container" shadow="never">
       <div>
         <i class="el-icon-search"></i>
-        <span>日志查询</span>
+        <span>日志搜索</span>
       </div>
       <div style="margin-top: 15px">
-        <el-form :inline="true" :model="listQuery" size="medium" label-width="140px">
-          <el-form-item label="用户搜索：">
-            <el-input v-model="listQuery.userName" class="input-width" placeholder="用户昵称"></el-input>
+        <el-form :inline="true" :model="listQuery" size="medium" label-width="90px">
+          <el-form-item label="登录IP：">
+            <el-input v-model="listQuery.ip" placeholder="登录ip地址"></el-input>
           </el-form-item>
-          <el-form-item label="日期搜索：">
-            <el-date-picker class="input-width" v-model="listQuery.time" value-format="yyyy-MM-dd" type="date" placeholder="请选择日期"></el-date-picker>
+          <el-form-item label="用户：">
+            <el-input v-model="listQuery.userName" placeholder="用户昵称"></el-input>
+          </el-form-item>
+          <el-form-item label="日期：">
+            <el-date-picker
+              v-model="listQuery.createTime"
+              type="datetimerange"
+              :picker-options="pickerOptions"
+              range-separator="至"
+              start-placeholder="开始日期"
+              end-placeholder="结束日期"
+              value-format="yyyy-MM-dd HH:mm:ss"
+              align="right">
+            </el-date-picker>
           </el-form-item>
           <el-button style="margin-left: 30px" type="primary" @click="search()" size="medium">查 询</el-button>
-          <el-button style="margin-left: 30px" @click="reForm" size="medium">重 置</el-button>
+          <el-button style="margin-left: 10px" @click="reForm" size="medium">重 置</el-button>
 <!--          <el-form-item label="本地文件：">-->
 <!--            <input type="file" @change="selectFile($event)" id="file"></input>-->
 <!--          </el-form-item>-->
@@ -31,16 +43,19 @@
         <el-table-column label="编号" width="120" align="center">
           <template slot-scope="scope">{{scope.$index+1}}</template>
         </el-table-column>
-        <el-table-column label="用户昵称" width="240" align="center">
+        <el-table-column label="用户昵称" width="200" align="center">
           <template slot-scope="scope">{{scope.row.userName}}</template>
         </el-table-column>
-        <el-table-column label="操作地址" width="240" align="center">
+        <el-table-column label="平台名称" width="200" align="center">
+          <template slot-scope="scope">{{scope.row.platformName}}</template>
+        </el-table-column>
+        <el-table-column label="操作地址" width="200" align="center">
           <template slot-scope="scope">{{scope.row.ip }}</template>
         </el-table-column>
-        <el-table-column label="时间" width="280" align="center">
+        <el-table-column label="时间" width="240" align="center">
           <template slot-scope="scope">{{scope.row.createTime}}</template>
         </el-table-column>
-        <el-table-column label="操作类型" width="240" align="center">
+        <el-table-column label="操作类型" width="200" align="center">
           <template slot-scope="scope">{{scope.row.operation}}</template>
         </el-table-column>
         <el-table-column label="请求地址" align="center">
@@ -71,8 +86,9 @@
   const defaultListQuery = {
     pageNum: 1,
     pageSize: 10,
-    userName: null,
-    time: null
+    ip: '',
+    userName: '',
+    createTime: ''
   };
   export default {
     name: "index",
@@ -83,10 +99,36 @@
         allList: [],     //获取的所有的目录信息数组
         selectList: [],
         list: [],
+        pickerOptions: {
+          shortcuts: [{
+            text: '最近一周',
+            onClick(picker) {
+              const end = new Date();
+              const start = new Date();
+              start.setDate(start.getDate() - 7);
+              picker.$emit('pick', [start, end]);
+            }
+          }, {
+            text: '最近一个月',
+            onClick(picker) {
+              const end = new Date();
+              const start = new Date();
+              start.setMonth(start.getMonth() - 1);
+              picker.$emit('pick', [start, end]);
+            }
+          }, {
+            text: '最近三个月',
+            onClick(picker) {
+              const end = new Date();
+              const start = new Date();
+              start.setMonth(start.getMonth() - 3);
+              picker.$emit('pick', [start, end]);
+            }
+          }]
+        },
       }
     },
     created() {
-      // this.search();
       this.get1();
     },
     methods: {
@@ -100,7 +142,6 @@
             that.allList = res.data;
             that.changeList();
             console.log("执行乐乐乐乐乐");
-
           })
           .catch(function (error) {
             console.log(error);
@@ -118,23 +159,28 @@
       handleCurrentChange() {            //改变当前页码后需要展示的目录信息的变化
         this.changeList();
       },
+
+      //查询按钮和重置按钮
       search() {
         let that = this;
         this.$http({
           method: 'get',
-          url: '/api/audit/getDirectoryAudit?userName=' + this.listQuery.userName,
-          responseType:'blob'   //对象内容不可修改
+          url: '/api/hibernate/syslog/selectByListQuery?ip=' + that.listQuery.ip + '&userName=' + that.listQuery.userName
+            + '&createTime=' + that.listQuery.createTime,
         })
           .then(function (res) {
-            console.log(res);
+            that.allList = res.data;
+            that.changeList();
           })
           .catch(function (error) {
             console.log(error);
           })
       },
       reForm() {
-        this.listQuery.userName = null;
-        this.listQuery.time = null;
+        this.listQuery.ip = '';
+        this.listQuery.userName = '';
+        this.listQuery.createTime = '';
+        this.get1();
       },
 //       selectFile(e) {
 //         // var fileObj = e.target.files[0]; // js 获取文件对象

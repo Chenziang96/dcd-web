@@ -1,6 +1,6 @@
 <template>
   <div class="app-container">
-    <el-page-header @back="goBack" :content="'目录详情(平台Ip：'+platform.platformIp + ')'">
+    <el-page-header @back="goBack" :content="'目录详情(平台Ip：'+platform.platformName + ')'">
     </el-page-header>
     <el-card class="operate-container" shadow="never">
       <div>
@@ -103,11 +103,7 @@
 <script>
   const defaultListQuery = {
     pageNum: 1,
-    pageSize: 10,
-    orderPerson: null,
-    orderIp: null,
-    orderDir: null,
-    createTime: null,
+    pageSize: 10
   };
   export default {
     name: "dirDetail",
@@ -139,7 +135,7 @@
         let that = this;
         this.$http({
           method: 'get',
-          url: '/api/hibernate/directory/findByPlatformIp?platformIp=' + this.platform.platformIp,
+          url: '/api/hibernate/directory/findByPlatformName?platformName=' + that.platform.platformName,
         })
           .then(function (res) {
             console.log(res);
@@ -191,7 +187,7 @@
           let that = this;
           this.$http({
             method: 'get',
-            url: '/api/hibernate/directory/findByPlatformIpAndResourceType?platformIp='+this.platform.platformIp+'&resourceType='+this.value,
+            url: '/api/hibernate/directory/findByPlatformNameAndResourceType?platformName='+this.platform.platformName+'&resourceType='+this.value,
           })
             .then(function (res) {
               console.log(res);

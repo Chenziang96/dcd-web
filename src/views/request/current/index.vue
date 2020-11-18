@@ -55,20 +55,6 @@
       </el-table>
     </div>
 
-    <el-dialog title="请求处理详情" :visible.sync="dialogTableVisible" align="center" width="600px">
-      <div class="block">
-        <el-timeline>
-          <el-timeline-item
-            v-for="(flag, index) in flag"
-            :key="index"
-            :type="flag.stepStatus"
-            :timestamp="flag.stepTime">
-            {{flag.info}}
-          </el-timeline-item>
-        </el-timeline>
-      </div>
-    </el-dialog>
-
     <!--分页-->
     <div class="pagination-container">
       <el-pagination
