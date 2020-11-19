@@ -1,5 +1,9 @@
 <template>
-  <ve-histogram :data="chartData" :extend="extend"></ve-histogram>
+  <a-card title="近期访问/被访问" class="card-barChart" shadow="always">
+    <div class="chart-wrapper">
+      <ve-histogram :data="chartData" :extend="extend"></ve-histogram>
+    </div>
+  </a-card>
 </template>
 
 <script>
@@ -30,5 +34,13 @@ export default {
 </script>
 
 <style scoped>
+.chart-wrapper {
+  margin-top: 46px;
+  margin-bottom: 30px;
+}
+.card-barChart {
+  margin: 10px;
+  height: 600px;
+}
 
 </style>

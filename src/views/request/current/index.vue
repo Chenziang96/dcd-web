@@ -1,37 +1,56 @@
 <template>
   <div class="app-container">
     <el-card class="operate-container" shadow="never">
-      <i class="el-icon-zoom-in"></i>
-      <el-select v-model="value" placeholder="请选择" @change="selectChange()">
-        <el-option
-          v-for="item in options"
-          :key="item.index"
-          :label="item"
-          :value="item">
-        </el-option>
-      </el-select>
+      <div>
+        <i class="el-icon-zoom-in"></i>
+        <span>筛选搜索</span>
+      </div>
+      <div style="margin-top: 15px">
+        <el-form :inline="true" :model="listQuery" size="medium" label-width="90px">
+          <el-form-item label="日期：">
+            <el-select v-model="value" placeholder="请选择" @change="selectChange()">
+              <el-option
+                v-for="item in options"
+                :key="item.index"
+                :label="item"
+                :value="item">
+              </el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item label="原平台：">
+            <el-input v-model="listQuery.srcPlatform" placeholder="原平台名称"></el-input>
+          </el-form-item>
+          <el-form-item label="目的平台：">
+            <el-input v-model="listQuery.dstPlatform" placeholder="目的平台名称"></el-input>
+          </el-form-item>
+          <el-button style="margin-left: 30px" type="primary" @click="search" size="medium">查 询</el-button>
+          <el-button style="margin-left: 10px" @click="reForm" size="medium">重 置</el-button>
+        </el-form>
+      </div>
+    </el-card>
+
+    <el-card class="operate-container" shadow="never">
+      <i class="el-icon-tickets"></i>
+      <span>请求列表</span>
     </el-card>
     <div class="table-container">
       <el-table ref="orderTable" :data="list" style="width: 100%;" @selection-change="" border>
-        <el-table-column label="时间" width="180" align="center">
-          <template slot-scope="scope">{{scope.row.requestTime}}</template>
-        </el-table-column>
-        <el-table-column label="用户名" width="180" align="center">
-          <template slot-scope="scope">{{scope.row.userName}}</template>
-        </el-table-column>
-        <el-table-column label="原平台" width="180" align="center">
+        <el-table-column label="原平台" width="220" align="center">
           <template slot-scope="scope">{{scope.row.srcPlatform}}</template>
         </el-table-column>
-        <el-table-column label="目的平台" width="180" align="center">
+        <el-table-column label="时间" width="220" align="center">
+          <template slot-scope="scope">{{scope.row.requestTime}}</template>
+        </el-table-column>
+        <el-table-column label="目的平台" width="220" align="center">
           <template slot-scope="scope">{{scope.row.dstPlatform}}</template>
         </el-table-column>
-        <el-table-column label="资源类型" width="180" align="center">
+        <el-table-column label="资源类型" width="220" align="center">
           <template slot-scope="scope">{{scope.row.resourceType}}</template>
         </el-table-column>
         <el-table-column label="目录名称" align="center">
           <template slot-scope="scope">{{scope.row.resourceName }}</template>
         </el-table-column>
-        <el-table-column label="状态" width="180" align="center">
+        <el-table-column label="状态" width="220" align="center">
           <template slot-scope="scope">
             <div v-show="scope.row.requestStatus===0">
               <i class="el-icon-question"></i>
@@ -47,7 +66,7 @@
             </div>
           </template>
         </el-table-column>
-        <el-table-column label="操作" width="180" align="center">
+        <el-table-column label="操作" width="220" align="center">
           <template slot-scope="scope">
             <el-button icon="el-icon-view" size="small" @click="handleRouter(scope.$index, scope.row)" type="success">查看详情</el-button>
           </template>
@@ -75,10 +94,8 @@
     const defaultListQuery = {
       pageNum: 1,
       pageSize: 10,
-      orderPerson: null,
-      orderIp: null,
-      orderDir: null,
-      createTime: null,
+      srcPlatform: '',
+      dstPlatform: ''
     };
     export default {
         name: "index",
@@ -92,7 +109,7 @@
 
             //对应的时间筛选框
             options: [ "今日", "三日内", "一周内", "一周外", "全部" ],
-            value: '今日',
+            value: '全部',
           }
         },
         created() {
@@ -265,30 +282,31 @@
               this.$router.push({path:'/request/requestDetail/error',query: row});
             }
           },
+
+          //搜索按钮和重置按钮
+          search() {
+            let that = this;
+            this.$http({
+              method: 'get',
+              url: '/api/hibernate/requestInfo/selectByListQuery?srcPlatform=' + that.listQuery.srcPlatform + '&dstPlatform=' + that.listQuery.dstPlatform,
+            })
+              .then(function (res) {
+                that.allList = res.data;
+                that.selectChange();
+              })
+              .catch(function (error) {
+                console.log(error);
+              })
+          },
+          reForm() {
+            this.listQuery.srcPlatform = '';
+            this.listQuery.dstPlatform = '';
+            this.get1();
+          }
         }
     }
 </script>
 
 <style scoped>
-  .form-border {
-    border-right: 1px solid #DCDFE6;
-    border-bottom: 1px solid #DCDFE6;
-    padding: 10px;
-    height: 40px;
-  }
 
-  .form-container-border {
-    border-left: 1px solid #DCDFE6;
-    border-top: 1px solid #DCDFE6;
-    margin-top: 15px;
-    text-align: center;
-  }
-
-  .form-left-bg {
-    background: #F2F6FC;
-  }
-
-  .pull-right {
-    float: right;
-  }
 </style>

@@ -156,10 +156,10 @@
             console.log(error);
           })
       }
-
     }
   }
 </script>
+
 <style scoped>
 
 </style>

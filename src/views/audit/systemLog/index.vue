@@ -3,7 +3,7 @@
     <el-card class="filter-container" shadow="never">
       <div>
         <i class="el-icon-search"></i>
-        <span>日志搜索</span>
+        <span>筛选搜索</span>
       </div>
       <div style="margin-top: 15px">
         <el-form :inline="true" :model="listQuery" size="medium" label-width="90px">
@@ -36,7 +36,7 @@
 
     <el-card class="operate-container" shadow="never">
       <i class="el-icon-tickets"></i>
-      <span>日志内容</span>
+      <span>日志列表</span>
     </el-card>
     <div class="table-container">
       <el-table ref="orderTable" :data="list" style="width: 100%;" @selection-change="" border>

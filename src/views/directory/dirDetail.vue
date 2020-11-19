@@ -30,7 +30,7 @@
       <span>目录列表</span>
     </el-card>
     <div class="table-container">
-      <el-table ref="orderTable" :data="list" style="width: 100%;" @selection-change="" border>
+      <el-table ref="orderTable" :data="list" style="width: 100%;" border>
         <el-table-column label="编号" width="120" align="center">
           <template slot-scope="scope">{{scope.$index+1}}</template>
         </el-table-column>
@@ -56,32 +56,8 @@
 
     <!--查看目录详情dialog-->
     <el-dialog title="目录详情" :visible.sync="dialogTableVisible" align="center" width="800px">
-      <div class="form-container-border">
-        <el-row>
-          <el-col :span="6" class="form-border form-left-bg font-medium">平台编号</el-col>
-          <el-col class="form-border font-medium" :span="18">{{dirDetailData.id}}</el-col>
-        </el-row>
-        <el-row>
-          <el-col :span="6" class="form-border form-left-bg font-medium">平台名称</el-col>
-          <el-col class="form-border font-medium" :span="18">{{dirDetailData.platformName}}</el-col>
-        </el-row>
-        <el-row>
-          <el-col :span="6" class="form-border form-left-bg font-medium">平台ip</el-col>
-          <el-col class="form-border font-medium" :span="18">{{dirDetailData.platformIp}}</el-col>
-        </el-row>
-        <el-row>
-          <el-col :span="6" class="form-border form-left-bg font-medium">资源类型</el-col>
-          <el-col class="form-border font-medium" :span="18">{{dirDetailData.resourceType}}</el-col>
-        </el-row>
-        <el-row>
-          <el-col :span="6" class="form-border form-left-bg font-medium">目录名称</el-col>
-          <el-col class="form-border font-medium" :span="18">{{dirDetailData.resourceName}}</el-col>
-        </el-row>
-        <el-row>
-          <el-col :span="6" class="form-border form-left-bg font-medium">权限等级</el-col>
-          <el-col class="form-border font-medium" :span="18">{{dirDetailData.safetyLevel}}</el-col>
-        </el-row>
-      </div>
+      <!--使用v-if，实现父组件动态向子组件传递参数。重新渲染界面，会重新传递参数-->
+      <directory-details v-if="dialogTableVisible" :dirDetailData="dirDetailData" />
     </el-dialog>
 
     <!--分页-->
@@ -101,13 +77,18 @@
 </template>
 
 <script>
+
+import DirectoryDetails from "./dirComponents/DirectoryDetails";
+
   const defaultListQuery = {
     pageNum: 1,
     pageSize: 10
   };
   export default {
     name: "dirDetail",
-    components:{},
+    components:{
+      DirectoryDetails
+    },
     data() {
       return {
         listQuery: Object.assign({}, defaultListQuery),
@@ -220,21 +201,5 @@
 </script>
 
 <style scoped>
-  .form-border {
-    border-right: 1px solid #DCDFE6;
-    border-bottom: 1px solid #DCDFE6;
-    padding: 10px;
-    height: 40px;
-  }
 
-  .form-container-border {
-    border-left: 1px solid #DCDFE6;
-    border-top: 1px solid #DCDFE6;
-    margin-top: 15px;
-    text-align: center;
-  }
-
-  .form-left-bg {
-    background: #F2F6FC;
-  }
 </style>
