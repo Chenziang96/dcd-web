@@ -30,7 +30,7 @@
           <el-form-item style="margin-left: 30px">
             <el-button class="pan-btn pink-btn" icon="el-icon-refresh" type="primary" @click="resetListQuery">重 置</el-button>
           </el-form-item>
-          <el-button :disabled="!btnPermission[0]" v-waves icon="el-icon-folder-add" type="primary" class="pull-right" @click="handleAdd">新增规则</el-button>
+          <el-button v-waves icon="el-icon-folder-add" type="primary" class="pull-right" @click="handleAdd">新增规则</el-button>
         </el-form>
       </div>
     </el-card>
@@ -73,8 +73,8 @@
         </el-table-column>
         <el-table-column label="操作" align="center">
           <template slot-scope="scope">
-            <el-button :disabled="!btnPermission[1]" v-waves type="warning" icon="el-icon-edit" size="small" @click="handleChange(scope.$index, scope.row)">编辑</el-button>
-            <el-button :disabled="!btnPermission[2]" v-waves type="danger" icon="el-icon-delete" size="small" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
+            <el-button v-waves type="warning" icon="el-icon-edit" size="small" @click="handleChange(scope.$index, scope.row)">编辑</el-button>
+            <el-button v-waves type="danger" icon="el-icon-delete" size="small" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
